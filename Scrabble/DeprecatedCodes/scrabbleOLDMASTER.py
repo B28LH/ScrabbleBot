@@ -429,15 +429,20 @@ def DisplayMeaning(word):
             print('\t%i %s' % (num + 1, definition))
 
 
-def play(MyLetters, GameBoard):
+def play(MyLetters, GameBoard, Difficulty=1):
     TheMoves = BestMove(MyLetters, GameBoard)
     if TheMoves:
-        MyMove = TheMoves[-1]
+        Scores = np.array([part[3] for part in TheMoves])
+        TargetScore = round(Scores.mean()+Difficulty*Scores.std())
+        for index,item in enumerate(TheMoves):
+            if item[3] == TargetScore:
+                MyMove = TheMoves[index]
+                break
         print("I play %s for %i points\n" % (MyMove[2], MyMove[3]))
         Layer(MyMove[0], MyMove[1][0], MyMove[1][1], MyMove[2], GameBoard)
         DisplayBoard(GameBoard)
-        print(list(reversed(TheMoves[-10:])))  # Do I need to print all the other options?
-        return(TheMoves)
+        print(list((reversed(TheMoves[-20:])))) # Do I need to print all the other options?
+        return TheMoves
         # DisplayMeaning(MyMove[2])
     else:
         print("With letters %s,\nI cannot play a move" % (' '.join(MyLetters)))
@@ -528,10 +533,10 @@ DisplayBoard(GameBoard)
 #GameBoard = LoadGame(GameBoard, 'Oscar2')
 
 # Check if a word is valid
-isWord('oiler')
+#isWord('oiler')
 
 # Lookup word in dictionary
-DisplayMeaning("neuritis")
+#DisplayMeaning("neuritis")
 
 # Check to see if a given play is valid: CheckInput(initial,GameBoard,Play)
 # initial is a move string ('d 5 6 rosey' (row,column))
@@ -543,7 +548,7 @@ DisplayMeaning("neuritis")
 BotLetters = list('kernsgn')
 
 # Ask the Computer to play a move
-play(BotLetters,GameBoard)
+play(BotLetters,GameBoard,1)
 
 
 # Ranking a human move
