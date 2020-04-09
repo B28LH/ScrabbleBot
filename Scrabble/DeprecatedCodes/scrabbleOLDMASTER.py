@@ -12,7 +12,7 @@ import pickle
 EngDict = PyDictionary()
 
 AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
-WWF = True  # Playing Words With Friends or traditional Scrabble
+WWF = False  # Playing Words With Friends or traditional Scrabble
 Small = False  # Small or large board
 MaxTile = 7
 GameName = 'test4'
@@ -100,7 +100,7 @@ def isWord(word):
     return word in words
 
 
-def DisplayBoard(grid):
+def DisplayBoard(grid=GameBoard):
     h = range(len(grid))
     if len(grid) < 10:
         print('    ' + '|'.join(map(str, h)))
@@ -417,7 +417,7 @@ def CompvsComp(Moves):
         Moves -= 1
 
 
-def DisplayMeaning(word):
+def Meaning(word):
     Meaning = EngDict.meaning(word.lower())
     if Meaning == None:
         print("'%s' is not a word in the dictionary" % word)
@@ -429,21 +429,20 @@ def DisplayMeaning(word):
             print('\t%i %s' % (num + 1, definition))
 
 
-def play(MyLetters, GameBoard, Difficulty=1):
+def play(MyLetters, GameBoard=GameBoard, Difficulty=1.5):
     TheMoves = BestMove(MyLetters, GameBoard)
     if TheMoves:
         Scores = np.array([part[3] for part in TheMoves])
         TargetScore = round(Scores.mean()+Difficulty*Scores.std())
+        print(list((reversed(TheMoves[-20:]))))
         for index,item in enumerate(TheMoves):
-            if item[3] == TargetScore:
+            if item[3] >= TargetScore:
                 MyMove = TheMoves[index]
                 break
         print("I play %s for %i points\n" % (MyMove[2], MyMove[3]))
         Layer(MyMove[0], MyMove[1][0], MyMove[1][1], MyMove[2], GameBoard)
         DisplayBoard(GameBoard)
-        print(list((reversed(TheMoves[-20:])))) # Do I need to print all the other options?
-        return TheMoves
-        # DisplayMeaning(MyMove[2])
+        Meaning(MyMove[2])
     else:
         print("With letters %s,\nI cannot play a move" % (' '.join(MyLetters)))
 
@@ -460,7 +459,7 @@ def InputFormat(string, GameBoard):
     return (Dir, (row, col), word, MB)
 
 
-def SaveGame(GameBoard, Name=GameName):
+def SaveGame(GameBoard=GameBoard, Name=GameName):
     with open('ScrabbleGames/%s.pkl' % Name, 'wb') as f1:
         pickle.dump(GameBoard, f1, pickle.HIGHEST_PROTOCOL)
     print("Game saved as", Name)
@@ -493,7 +492,7 @@ def MoveEval(Word, Tiles, GameBoard, CompMoves):
     return CompMoves
 
 
-def CheckInput(initial, GameBoard, Play):
+def CheckInput(initial, GameBoard=GameBoard, Play=True):
     Dir, Start, word, MB = InputFormat(initial, GameBoard)
     if Dir == 1:
         CovSquare = [(Start[0] + i, Start[1]) for i in range(len(word))]
@@ -527,28 +526,28 @@ GameBoard = np.copy(StartBoard)
 DisplayBoard(GameBoard)
 
 # Save the game, name defaults to GameName
-#SaveGame(GameBoard, 'Oscar1')
+SaveGame(GameBoard)
 
 # Load a previous game. Second variable is the name of the file (optional)
-#GameBoard = LoadGame(GameBoard, 'Oscar2')
+#GameBoard = LoadGame(GameBoard)
 
 # Check if a word is valid
 #isWord('oiler')
 
 # Lookup word in dictionary
-#DisplayMeaning("neuritis")
+#Meaning("neuritis")
 
 # Check to see if a given play is valid: CheckInput(initial,GameBoard,Play)
 # initial is a move string ('d 5 6 rosey' (row,column))
 # GameBoard is the board
 # Play is True when you want the move to be entered, False if just check
-#Choice = 'a 14 1 kerns'
-#CheckInput(Choice,GameBoard,True)
+# Choice = 'a 14 1 kerns'
+# CheckInput(Choice,GameBoard,True)
 # Computer's letters (a blank is denoted by &)
-BotLetters = list('kernsgn')
+# BotLetters = list('')
 
 # Ask the Computer to play a move
-play(BotLetters,GameBoard,1)
+# play(BotLetters,GameBoard,1)
 
 
 # Ranking a human move
@@ -556,7 +555,7 @@ play(BotLetters,GameBoard,1)
 # HumanPlay = 'a 11 7 fig'
 
 # Creates a move evaluation (for first time)
-#Evaluation = MoveEval(HumanPlay, list(HumanLetters), GameBoard, False)
+# Evaluation = MoveEval(HumanPlay, list(HumanLetters), GameBoard, False)
 
 # For the second+ evaluation
 # MoveEval(HumanPlay,list(HumanLetters),GameBoard,Evaluation)

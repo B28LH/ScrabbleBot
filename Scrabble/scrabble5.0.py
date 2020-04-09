@@ -9,6 +9,7 @@ BestTime = 21.788
 LastTime = 23.676
 
 # Todo:
+# Implement new dictionary and word checker
 # Implement playing against computer
 # Work through best move
 # Create move object
