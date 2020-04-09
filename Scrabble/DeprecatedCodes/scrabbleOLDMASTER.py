@@ -437,6 +437,7 @@ def play(MyLetters, GameBoard):
         Layer(MyMove[0], MyMove[1][0], MyMove[1][1], MyMove[2], GameBoard)
         DisplayBoard(GameBoard)
         print(list(reversed(TheMoves[-10:])))  # Do I need to print all the other options?
+        return(TheMoves)
         # DisplayMeaning(MyMove[2])
     else:
         print("With letters %s,\nI cannot play a move" % (' '.join(MyLetters)))
@@ -524,7 +525,7 @@ DisplayBoard(GameBoard)
 #SaveGame(GameBoard, 'Oscar1')
 
 # Load a previous game. Second variable is the name of the file (optional)
-GameBoard = LoadGame(GameBoard, 'Oscar2')
+#GameBoard = LoadGame(GameBoard, 'Oscar2')
 
 # Check if a word is valid
 isWord('oiler')
