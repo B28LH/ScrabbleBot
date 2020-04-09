@@ -10,12 +10,6 @@ import re
 import string
 import pickle
 
-# Todo:
-# Implement playing against computer
-# Work through best move
-# Create move object
-# New way to find all possible places to play
-# Is alpha
 
 AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
 WWF = False  # Playing Words With Friends or traditional Scrabble
