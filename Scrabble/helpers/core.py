@@ -1,11 +1,13 @@
+import numpy as np
+from helpers import data
 
-class Board():
-    def __init__(self, design=official):  # takes the design and expands it into a full board
+
+class Board:
+    def __init__(self, design=data.official):  # takes the design and expands it into a full board
         r, c = design.shape
-        global width
         self.data = np.pad(design, ((0, r - 1), (0, c - 1)), 'reflect')
-        self.alpha = AlphaArray(self.data)
-        self.size = width = len(self.data)
+        self.alpha = data.AlphaArray(self.data)
+        self.size = len(self.data)
         self.design = design
 
     def __str__(self):
@@ -26,7 +28,7 @@ class Board():
 
     def __setitem__(self, index, value):
         self.data[index] = value
-        self.alpha = AlphaArray(self.data)
+        self.alpha = data.AlphaArray(self.data)
 
     def __getitem__(self, index):
         return self.data[index]
@@ -40,4 +42,4 @@ class Board():
         else:  # down
             assert xC + WordLen <= self.size, "Too large"
             self.data[xC:xC + WordLen, yC] = list(word)
-        self.alpha = AlphaArray(self.data)
+        self.alpha = data.AlphaArray(self.data)
