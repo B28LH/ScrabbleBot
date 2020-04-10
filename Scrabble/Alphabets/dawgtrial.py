@@ -1,7 +1,8 @@
 import dawg
 import gaddag
 import timeit
-#set is fasterI
+
+# set is faster
 
 s = '''
 import dawg;

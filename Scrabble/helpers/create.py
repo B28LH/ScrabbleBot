@@ -15,8 +15,6 @@ def ValidHorz(xC, yC, width):
     return [x for x in ((xC, yC + 1), (xC, yC - 1)) if 0 <= x[0] < width and 0 <= x[1] < width]
 
 
-def AlphaArray(arr):
-    return np.isin(arr, data.alphabet).astype(int)
 
 
 def initialise(GameName, WWF=False, Small=False):
