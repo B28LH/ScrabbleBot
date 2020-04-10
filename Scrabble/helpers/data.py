@@ -4,8 +4,10 @@ import string
 # Essential variables
 
 addOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-alphabet = string.ascii_lowercase
+alphabet = list(string.ascii_letters)
+loweralpha = list(string.ascii_lowercase)
 maxTile = 7
+path = '/Users/Ben/Documents/PythonScripts/Best Scripts/Scrabble/'
 
 # Bags
 sTileValues = {"a": 1, "c": 3, "b": 3, "e": 1, "d": 2, "g": 2,
@@ -42,3 +44,15 @@ friendsBigQuad = ['---#--^-', '--*--!--', '-*--*---', '#--^---!', '--*---*-',
 official = np.array([list(x) for x in officialQuad])
 friendsSmall = np.array([list(x) for x in friendsSmallQuad])
 friendsBig = np.array([list(x) for x in friendsBigQuad])
+
+# Essential Globals
+
+dictfile = 'collins.txt'
+wordset = None
+meaningdict = None
+allTileBonus = 50
+startTile = True
+tileValues = sTileValues
+design = friendsBig
+
+gameBoard = None
