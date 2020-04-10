@@ -1,9 +1,6 @@
 from scipy import ndimage
 import numpy as np
 import string
-import pickle
-from helpers import core
-
 
 # Todo:
 # Implement new dictionary and word checker

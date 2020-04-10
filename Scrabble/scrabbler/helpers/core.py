@@ -4,7 +4,7 @@
 
 import pickle
 import numpy as np
-from helpers import data
+from scrabbler.helpers import data
 from scipy import ndimage
 
 
@@ -74,7 +74,7 @@ class Board:
     def Save(self, Name=None, Display=False):  # save objects or arrays?
         if Name is None:
             Name = self.title
-        with open(f"../ScrabbleGames/{Name}.pkl", 'wb') as f1:
+        with open(data.abspath + f"ScrabbleGames/{Name}.pkl", 'wb') as f1:
             pickle.dump(self.squares, f1, pickle.HIGHEST_PROTOCOL)
         print(f"Game saved as {Name}\n")
         if Display:
@@ -82,7 +82,7 @@ class Board:
 
 
 def load(Name):  # Watch out for loading a deprecated Board object (or just an array)
-    with open('../ScrabbleGames/%s.pkl' % Name, 'rb') as f:
+    with open(data.abspath + f"ScrabbleGames/{Name}.pkl", 'rb') as f:
         LoadBoard = pickle.load(f)
     Loader = Board(Name)  # nb set the correct base design
     if type(LoadBoard) == np.ndarray:
