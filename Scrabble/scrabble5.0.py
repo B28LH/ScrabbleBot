@@ -5,9 +5,6 @@ import pickle
 from helpers import core
 
 
-BestTime = 21.788
-LastTime = 23.676
-
 # Todo:
 # Implement new dictionary and word checker
 # Implement playing against computer
@@ -50,24 +47,6 @@ def AlphaArray(arr):
 #    def __init__(self,start,end,word)
 
 
-def SaveGame(Board, Name=GameName):
-    with open('ScrabbleGames/%s.pkl' % Name, 'wb') as f1:
-        pickle.dump(Board.data, f1, pickle.HIGHEST_PROTOCOL)
-    print("Game saved as", Name)
-
-
-def LoadGame(Name=GameName):  ## Watch out for loading a depricated Board object (or just an array)
-    with open('ScrabbleGames/%s.pkl' % Name, 'rb') as f:
-        LoadBoard = pickle.load(f)
-    Loader = Board()  # nb set the correct base design
-    if type(LoadBoard) == np.ndarray:
-        inData = LoadBoard
-    else:
-        inData = LoadBoard.data
-    Loader.data = inData
-    Loader.alpha = AlphaArray(inData)
-    print("\nGame '%s' loaded \n\n%s" % (Name, str(Loader)))
-    return Loader
 
 
 NewGame = LoadGame()

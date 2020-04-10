@@ -1,6 +1,5 @@
 from itertools import permutations as pm
 from collections import Counter
-from PyDictionary import PyDictionary
 
 from bisect import bisect_left
 import numpy as np
@@ -9,7 +8,11 @@ import re
 import string
 import pickle
 
-EngDict = PyDictionary()
+# TODO:
+# DONT DO DEFAULT VARIABLES
+# Implement meaning for every word played
+# Recover changes from last time
+# Word exeption override
 
 AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
 WWF = False  # Playing Words With Friends or traditional Scrabble
@@ -41,7 +44,7 @@ if WWF:
     startTile = False
     TileValues = WTileValues
 else:
-    file = 'scra.txt'
+    file = 'collins.txt'
     allTileBonus = 50
     startTile = True
     TileValues = STileValues
@@ -98,6 +101,10 @@ with open(file, 'r') as file:
 
 def isWord(word):
     return word in words
+
+
+with open('collinsdict.pkl', 'rb') as f:
+    collinsdict = pickle.load(f)
 
 
 def DisplayBoard(grid=GameBoard):
@@ -416,8 +423,11 @@ def CompvsComp(Moves):
             print("With letter(s) %s,\nI cannot play a move" % (' '.join(let)))
         Moves -= 1
 
-
 def Meaning(word):
+    print('{}: {}'.format(word, collinsdict[word.lower()]))
+
+
+def Meaning2(word):  # deprecated
     Meaning = EngDict.meaning(word.lower())
     if Meaning == None:
         print("'%s' is not a word in the dictionary" % word)
@@ -429,7 +439,7 @@ def Meaning(word):
             print('\t%i %s' % (num + 1, definition))
 
 
-def play(MyLetters, GameBoard=GameBoard, Difficulty=1.5):
+def play(MyLetters, GameBoard=GameBoard, Difficulty=3):
     TheMoves = BestMove(MyLetters, GameBoard)
     if TheMoves:
         Scores = np.array([part[3] for part in TheMoves])
@@ -439,7 +449,7 @@ def play(MyLetters, GameBoard=GameBoard, Difficulty=1.5):
             if item[3] >= TargetScore:
                 MyMove = TheMoves[index]
                 break
-        print("I play %s for %i points\n" % (MyMove[2], MyMove[3]))
+        print("I play %s for %i points, at (%i, %i)\n" % (MyMove[2], MyMove[3], MyMove[1][0], MyMove[1][1]))
         Layer(MyMove[0], MyMove[1][0], MyMove[1][1], MyMove[2], GameBoard)
         DisplayBoard(GameBoard)
         Meaning(MyMove[2])
@@ -459,13 +469,14 @@ def InputFormat(string, GameBoard):
     return (Dir, (row, col), word, MB)
 
 
-def SaveGame(GameBoard=GameBoard, Name=GameName):
+def SaveGame(GameBoard, Name=GameName):
+    DisplayBoard(GameBoard)
     with open('ScrabbleGames/%s.pkl' % Name, 'wb') as f1:
         pickle.dump(GameBoard, f1, pickle.HIGHEST_PROTOCOL)
     print("Game saved as", Name)
 
 
-def LoadGame(GameBoard, Name=GameName):
+def LoadGame(Name=GameName):
     with open('ScrabbleGames/%s.pkl' % Name, 'rb') as f:
         GameBoard = pickle.load(f)
     print("Game '%s' loaded" % Name)

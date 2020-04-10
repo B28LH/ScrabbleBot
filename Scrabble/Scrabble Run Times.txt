@@ -1,3 +1,6 @@
+BestTime = 21.788
+LastTime = 23.676
+
 ###--------Benchmark computation------
 
 import cProfile
