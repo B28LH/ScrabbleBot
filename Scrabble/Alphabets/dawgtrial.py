@@ -1,23 +1,38 @@
-import dawg
-import gaddag
 import timeit
-
-# set is faster
 
 s = '''
 import dawg;
+import gaddag;
 
 with open('collins.txt','r') as inFile:
     wordy = [x.strip() for x in inFile.readlines()];
     words = set(wordy);
 
+normalgaddag = gaddag.GADDAG(words);
 normaldawg = dawg.DAWG(wordy);
 complete = dawg.CompletionDAWG(wordy);
 '''
 
-print(timeit.timeit('"banana" in normaldawg',
+print(timeit.timeit('normalgaddag.starts_with("ba")',
                     setup=s,
-                    number=100000))
-print(timeit.timeit('"banana" in words',
+                    number=1000))
+print(timeit.timeit('complete.keys("ba")',
                     setup=s,
-                    number=100000))
+                    number=1000))
+
+print(timeit.timeit('normalgaddag.ends_with("red")',
+                    setup=s,
+                    number=1000))
+print(timeit.timeit('complete.prefixes("creatored")',
+                    setup=s,
+                    number=1000))
+
+print(timeit.timeit('"creative" in normalgaddag',
+                    setup=s,
+                    number=1000))
+print(timeit.timeit('"creative" in normaldawg',
+                    setup=s,
+                    number=1000))
+print(timeit.timeit('"creative" in words',
+                    setup=s,
+                    number=1000))
