@@ -47,37 +47,6 @@ def AlphaArray(arr):
 #    def __init__(self,start,end,word)
 
 
-
-
-NewGame = LoadGame()
-
-
-def LayAcross(xC, yC, word, GameBoard):  # fix this
-    n = len(word)
-    if yC + n > width:
-        return False
-    bit = GameBoard[xC]
-    for i in range(n):
-        bit[yC + i] = word[i]
-    GameBoard[xC] = bit
-    return GameBoard
-
-
-def LayDown(xC, yC, word, GameBoard):
-    n = len(word)
-    if xC + n > width:
-        return False
-    GameBoard[xC:xC + n, yC] = list(word)
-    return GameBoard
-
-
-def Layer(Orient, xC, yC, word, GameBoard):
-    if Orient == 1:
-        return LayDown(xC, yC, word, GameBoard)
-    else:
-        return LayAcross(xC, yC, word, GameBoard)
-
-
 # Finds the possible start tiles, returns a board and a list
 # 3 means both, 2 is vertical, 1 is horizontal, 0 is none, -1 is start
 

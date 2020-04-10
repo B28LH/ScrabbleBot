@@ -1,6 +1,6 @@
  Paper: https://www.cs.cmu.edu/afs/cs/academic/class/15451-s06/www/lectures/scrabble.pdf
  - First scan over the board for places where a word could connect letters
- - Only care about one dimesion, as board can be flipped to generate down plays as across plays
+ - Only care about one dimension, as board can be flipped to generate down plays as across plays
     Compute cross-checks before each move generation -> set of letters which will form valid down words
     Don't have to recompute every cross check, only the changed ones
 - Every across word is anchored (the leftmost placed tile)
