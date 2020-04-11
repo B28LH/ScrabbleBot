@@ -2,6 +2,7 @@
 """
 
 import numpy as np
+from itertools import permutations
 from scrabbler.helpers import data
 from scipy import ndimage
 
@@ -117,6 +118,11 @@ def botPlay(rack, boardObj):
     crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # IMPROVEMENT: just one betterMoveTiles.
     for anchorRow, anchorCol in anchorList:
+        goodLetters = crossChecks[anchorRow][anchorCol]
+        if goodLetters is not None:
+            goodAnchors = set(rack) & set(goodLetters)  # Rack letters which can be played in the anchor
+        else:
+            goodAnchors = set(rack)
         before, after = completeWord(boardObj, (anchorRow, anchorCol))
         if before == '':
             left = posMove(anchorRow, anchorCol)
