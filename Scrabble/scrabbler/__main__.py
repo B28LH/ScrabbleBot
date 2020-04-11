@@ -32,3 +32,4 @@ with open(f'./Alphabets/{data.dictfile}', 'r') as infile:
 data.gameBoard = core.load('Oscar2')
 
 a, b = algo.betterMoveTiles(data.gameBoard, both=True)
+

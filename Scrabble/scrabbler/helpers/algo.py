@@ -124,6 +124,7 @@ def botPlay(rack, boardObj):
             while left and not anchorGrid[left]:
                 left = posMove(left[0], left[1])
                 counter += 1
+
         else:
             pass
         # Either 1) The anchor left borders a placed tile / wall OR we have free space
