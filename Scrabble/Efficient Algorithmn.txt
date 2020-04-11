@@ -1,4 +1,6 @@
  Paper: https://www.cs.cmu.edu/afs/cs/academic/class/15451-s06/www/lectures/scrabble.pdf
+ DAWG Doc: https://dawg.readthedocs.io/en/latest/
+ GADDAG DOC: https://gaddag.readthedocs.io/en/latest/
  - First scan over the board for places where a word could connect letters
  - Only care about one dimension, as board can be flipped to generate down plays as across plays
     Compute cross-checks before each move generation -> set of letters which will form valid down words

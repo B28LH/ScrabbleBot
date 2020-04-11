@@ -107,20 +107,25 @@ def crossChecks(boardObj):
     return outArray
 
 
-def botPlay(letters, boardObj):
+def botPlay(rack, boardObj):
+    """ Plays the best move possible from a given rack
+
+    :param rack: a string of the letters from the rack
+    :param boardObj: a Board() object
+    :return: TBD: MoveObj?
+    """
     crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # IMPROVEMENT: just one betterMoveTiles.
     for anchorRow, anchorCol in anchorList:
         before, after = completeWord(boardObj, (anchorRow, anchorCol))
         if before == '':
             left = posMove(anchorRow, anchorCol)
-            counter = 0
+            counter = 0  # Counter is the number of free spaces you have to the left.
             while left and not anchorGrid[left]:
                 left = posMove(left[0], left[1])
                 counter += 1
-            # Counter is the number of free spaces you have to the left.
+        else:
+            pass
         # Either 1) The anchor left borders a placed tile / wall OR we have free space
 
     pass
-    # Generate cross checks for the board
-    # Generate 'anchors'
