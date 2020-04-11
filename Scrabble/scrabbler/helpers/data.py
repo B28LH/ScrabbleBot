@@ -7,7 +7,6 @@ addOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 alphabet = list(string.ascii_letters)
 loweralpha = list(string.ascii_lowercase)
 maxTile = 7
-abspath = '/Users/Ben/Documents/PythonScripts/Best Scripts/Scrabble/scrabbler/'
 
 # Bags
 sTileValues = {"a": 1, "c": 3, "b": 3, "e": 1, "d": 2, "g": 2,
