@@ -112,6 +112,8 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     """ When given a word, checks that the word can be played given the board and tiles
         WORKING
     """
+    if word not in data.wordset:  # This might not be needed
+        return False
     i = startLen
     letters = list(remainingTiles)
     while i < len(word):  # Relative position to anchor
@@ -131,7 +133,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
                 return False
             letters.remove(word[i])
         i += 1
-    rightTile = posMove(myRow, myCol + 1)
+    rightTile = posMove(anchorRow, anchorCol + i)
     if rightTile is not None and boardObj.AlphaArray()[rightTile]:  # Checks if right is not clear.
         return False
     return True
@@ -183,6 +185,5 @@ def botPlay(rack, boardObj):
                 # Going to try all possible endings, rather than try all fittings
                 # THIS IS A FORK IN THE ROAD FOR THE ALGO
                 for word in endings:
-                    # will this work when numUsedTiles == len(word) ?
                     if checkWordMatches(numUsedTiles, word, anchorRow, anchorCol, theseTilesLeft, boardObj):
                         possibleMoves.append(word)  # TODO: MoveObj

@@ -16,7 +16,10 @@ TO EXECUTE THE MAIN FILE:
 """
 
 data.crossed = algo.crossChecks(data.gameBoard)
-print(algo.checkWordMatches(1, 'nexus', 11, 6, 'eus', data.gameBoard))
+
+print(algo.checkWordMatches(1, 'nexus', 11, 6, 'xeus', data.gameBoard))
+
+print(algo.checkWordMatches(4, 'jute', 5, 4, 'random', data.gameBoard))
 
 # algo.botPlay('tryhard',data.gameBoard)
 
