@@ -1,6 +1,9 @@
 import scrabbler
+import dawg
 from scrabbler.helpers import core, data, algo
 import pickle
+
+# Should this all belong in the __init__.py ???
 
 WWF = False
 small = False
@@ -12,23 +15,9 @@ TO EXECUTE THE MAIN FILE:
 >>> runpy.run_module(mod_name='scrabbler')
 """
 
-if scrabbler.WWF:
-    data.dictfile = 'wwf.txt'
-    data.allTileBonus = 35
-    data.startTile = False
-    data.tileValues = data.wTileValues
-    if scrabbler.small:
-        data.design = data.friendsSmall
-    else:
-        data.design = data.friendsBig
-else:
-    with open('./Alphabets/collinsdict.pkl', 'rb') as f:
-        data.meaningdict = pickle.load(f)
+data.crossed = algo.crossChecks(data.gameBoard)
+print(algo.checkWordMatches(1, 'nexus', 11, 6, 'eus', data.gameBoard))
 
-# data.gameBoard = core.Board(title, data.design)
-with open(f'./Alphabets/{data.dictfile}', 'r') as infile:
-    data.wordset = set(infile.read().split())
-
-data.gameBoard = core.load('Oscar2')
+# algo.botPlay('tryhard',data.gameBoard)
 
 a, b = algo.betterMoveTiles(data.gameBoard, both=True)
