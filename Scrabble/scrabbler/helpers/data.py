@@ -49,9 +49,14 @@ friendsBig = np.array([list(x) for x in friendsBigQuad])
 dictfile = 'collins.txt'
 wordset = None
 meaningdict = None
+completor = None
+dawg = None
+
+
 allTileBonus = 50
 startTile = True
 tileValues = sTileValues
 design = friendsBig
 
 gameBoard = None
+crossed = None
