@@ -3,7 +3,7 @@
 
 import numpy as np
 from itertools import permutations, chain
-from scrabbler.helpers import data
+from scrabbler.helpers import data, core
 from scipy import ndimage
 
 
@@ -148,7 +148,7 @@ def botPlay(rack, boardObj):
     """
     data.crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
-    possibleMoves = []  # TODO: Make this a list of moveObjs
+    possibleMoves = []  # A list of Move() objects
     for anchorRow, anchorCol in anchorList:
         goodLetters = data.crossed[anchorRow][anchorCol]  # Checking the anchor square for down restrictions
         if goodLetters is not None:
@@ -186,4 +186,5 @@ def botPlay(rack, boardObj):
                 # THIS IS A FORK IN THE ROAD FOR THE ALGO
                 for word in endings:
                     if checkWordMatches(numUsedTiles, word, anchorRow, anchorCol, theseTilesLeft, boardObj):
-                        possibleMoves.append(word)  # TODO: MoveObj
+                        # TODO: Check that start coordinates are good
+                        possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
