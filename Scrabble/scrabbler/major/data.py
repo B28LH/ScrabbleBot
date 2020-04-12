@@ -46,17 +46,15 @@ friendsBig = np.array([list(x) for x in friendsBigQuad])
 
 # Essential Globals
 
-dictfile = 'collins.txt'
+dictfile = None
 wordset = None
-meaningdict = None
+meaningDict = None
 completor = None
-dawg = None
 
-
-allTileBonus = 50
-startTile = True
-tileValues = sTileValues
-design = friendsBig
+allTileBonus = None
+startTile = None
+tileValues = None
+design = None
 
 gameBoard = None
 crossed = None
