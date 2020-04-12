@@ -4,13 +4,9 @@ import pickle
 import dawg
 
 WWF = False
-Small = False
-title = 'Test5'
-
-
-WWF = False
 small = False
-title = 'Test5'
+title = 'Sparse'
+
 
 if scrabbler.WWF:
     data.dictfile = 'wwf.txt'
@@ -25,11 +21,12 @@ else:
     with open('./alphabets/collinsdict.pkl', 'rb') as f:
         data.meaningdict = pickle.load(f)
 
-# data.gameBoard = core.Board(title, data.design), if wanting a fresh board
+# TODO: save the dawgs so they don't have to be constructed every time
 with open(f'./alphabets/{data.dictfile}', 'r') as infile:
     data.wordset = set(infile.read().split())
 
 data.dawg = dawg.DAWG(data.wordset)
 data.completor = dawg.CompletionDAWG(data.wordset)
 
-data.gameBoard = core.load('Test2')
+gb = data.gameBoard = core.load('Sparse')
+# data.gameBoard = core.Board(title, data.design)

@@ -3,7 +3,7 @@
 
 import pickle
 import numpy as np
-from scrabbler.helpers import data
+from scrabbler.major import data
 
 
 class Board:
@@ -40,17 +40,19 @@ class Board:
     def AlphaArray(self):  # This really should be an attribute, not a method
         return np.isin(self.squares, data.alphabet).astype(int)
 
-    def Layer(self, isAcross, coords, word):
+    def layer(self, coords, word, across=True):
         row, col = coords
         WordLen = len(word)
-        if isAcross:
+        if across:
             assert col + WordLen <= self.size, "Too large"
             self.squares[row, col:col + WordLen] = list(word)
         else:  # down
             assert row + WordLen <= self.size, "Too large"
             self.squares[row:row + WordLen, col] = list(word)
 
-    def Save(self, Name=None, Display=False):  # save objects or arrays?
+    # TODO: create a 'cancel' function which deletes last word
+
+    def save(self, Name=None, Display=False):  # save objects or arrays?
         if Name is None:
             Name = self.title
         with open(f"ScrabbleGames/{Name}.pkl", 'wb') as f1:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
@@ -66,8 +68,12 @@ class Move:
         self.word = word
         self.row, self.col = startCoords
         self.length = len(word)
-        self.score = score
+        self.score = self.score()
         self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
+
+    def score(self):
+        pass  # TODO: implement scoring
+        return 1
 
     def __str__(self):
         if self.score is None:
@@ -75,30 +81,29 @@ class Move:
         return f"{self.word} @ ({self.row},{self.col}) for {self.score} points"
 
     def __repr__(self):  # When is this called?
-        if self.score is None:
-            return f"{self.word} ({self.row},{self.col})"
-        return f"{self.score}: {self.word} @ ({self.row},{self.col})"
+        return str(self)
 
     def __lt__(self, other):
         return self.score < other.score
 
 
-def load(Name):
+def load(name, display=False):
     """ Loads a board from file into a BoardObj
     Watch out for loading a deprecated Board object (or just an array)
     
     :param Name: The filename of the board you want to load
     :return: BoardObj: the loaded board
     """
-    with open(f"ScrabbleGames/{Name}.pkl", 'rb') as f:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
+    with open(f"ScrabbleGames/{name}.pkl", 'rb') as f:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
         LoadBoard = pickle.load(f)
-    Loader = Board(Name)  # nb set the correct base design
+    Loader = Board(name)  # nb set the correct base design
     if type(LoadBoard) == np.ndarray:
         inData = LoadBoard
     else:
         inData = LoadBoard.squares
     Loader.squares = inData
-    print(f"\nGame '{Name}' loaded \n\n{Loader}")
+    if display:
+        print(f"\nGame '{name}' loaded \n\n{Loader}")
     return Loader
 
 

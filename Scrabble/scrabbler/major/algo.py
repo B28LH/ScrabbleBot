@@ -3,7 +3,7 @@
 
 import numpy as np
 from itertools import permutations, chain
-from scrabbler.helpers import data, core
+from scrabbler.major import data, core
 from scipy import ndimage
 
 
@@ -97,14 +97,16 @@ def crossChecks(boardObj):  # TODO: make it returns a list of sets
     outArray = [[None for _ in range(boardObj.size)] for _ in range(boardObj.size)]
     moveGird, moveList = betterMoveTiles(boardObj, across=False)
     for row, col in moveList:
-        works = []
+        works = set()
         before, after = completeWord(boardObj, (row, col), across=False)
         for char in data.loweralpha:
-            newWord = char.join([before, after])
+            newWord = char.join((before, after))
             if newWord in data.wordset:
-                works.append(char)
+                works.add(char)
         if len(works) > 0:
             outArray[row][col] = works
+        else:
+            outArray[row][col] = False
     return outArray
 
 
@@ -139,7 +141,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     return True
 
 
-def botPlay(rack, boardObj):
+def botPlay(rack, boardObj):  # TODO: split this into more functions
     """ Plays the best move possible from a given rack
 
     :param rack: a string of the letters from the rack
@@ -188,3 +190,4 @@ def botPlay(rack, boardObj):
                     if checkWordMatches(numUsedTiles, word, anchorRow, anchorCol, theseTilesLeft, boardObj):
                         # TODO: Check that start coordinates are good
                         possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
+    return possibleMoves
