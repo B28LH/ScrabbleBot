@@ -92,21 +92,30 @@ def crossChecks(boardObj):  # TODO: make it returns a list of sets
     """ Produces an array of the valid one-tile down moves for each square
 
     :param boardObj:
-    :return: outArray, a (NON NUMPY) array containing working letters for each square
+    :return: outArray, a (NON NUMPY) array:
+        1) If the cell is occupied by a letter, is None
+        2) If the cell is not affected by any vertical collisions, is False
+        3) If the cell is affected by any vertical collisions, a set of valid tiles to place (CANNOT BE EMPTY)
+        4) If the cell is affected by vertical collisions and no tile can be place, is INVALID
+
     """
-    outArray = [[None for _ in range(boardObj.size)] for _ in range(boardObj.size)]
-    moveGird, moveList = betterMoveTiles(boardObj, across=False)
-    for row, col in moveList:
-        works = set()
-        before, after = completeWord(boardObj, (row, col), across=False)
-        for char in data.loweralpha:
-            newWord = char.join((before, after))
-            if newWord in data.wordset:
-                works.add(char)
-        if len(works) > 0:
-            outArray[row][col] = works
-        else:
-            outArray[row][col] = False
+    outArray = [[False for _ in range(boardObj.size)] for _ in range(boardObj.size)]
+    moveGrid, _ = betterMoveTiles(boardObj, across=False)
+    for row in range(boardObj.size):
+        for col in range(boardObj.size):
+            if moveGrid[row][col]:
+                works = set()
+                before, after = completeWord(boardObj, (row, col), across=False)
+                for char in data.loweralpha:
+                    newWord = char.join((before, after))
+                    if newWord in data.wordset:
+                        works.add(char)
+                if len(works) > 0:
+                    outArray[row][col] = works
+                else:
+                    outArray[row][col] = "INVALID"
+            elif boardObj.AlphaArray()[row, col]:
+                outArray[row][col] = None
     return outArray
 
 
@@ -122,16 +131,12 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
         myRow, myCol = anchorRow, anchorCol + i
         crossStatus = data.crossed[myRow][myCol]  # Crossed should be in data
         if crossStatus is None:
-            theSquare = boardObj.squares[myRow][myCol]
-            if theSquare.isalpha():  # Use alphaArray?
-                if theSquare != word[i]:
-                    return False
-            elif word[i] not in letters:
+            if boardObj.squares[myRow, myCol] != word[i]:
                 return False
-            else:
-                letters.remove(word[i])
+        elif crossStatus == "INVALID":
+            return False
         else:
-            if word[i] not in crossStatus or word[i] not in letters:
+            if crossStatus and word[i] not in crossStatus:
                 return False
             letters.remove(word[i])
         i += 1
