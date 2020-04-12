@@ -2,7 +2,7 @@
 """
 
 import numpy as np
-from itertools import permutations
+from itertools import permutations, chain
 from scrabbler.helpers import data
 from scipy import ndimage
 
@@ -88,8 +88,8 @@ def completeWord(boardObj, coord, across=True):
     return posPart[::-1], negPart
 
 
-def crossChecks(boardObj):
-    """ Produces all the valid vertically bordered cells
+def crossChecks(boardObj):  # TODO: make it returns a list of sets
+    """ Produces an array of the valid one-tile down moves for each square
 
     :param boardObj:
     :return: outArray, a (NON NUMPY) array containing working letters for each square
@@ -108,6 +108,35 @@ def crossChecks(boardObj):
     return outArray
 
 
+def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, boardObj):  # TODO: Clean up the logic
+    """ When given a word, checks that the word can be played given the board and tiles
+        WORKING
+    """
+    i = startLen
+    letters = list(remainingTiles)
+    while i < len(word):  # Relative position to anchor
+        myRow, myCol = anchorRow, anchorCol + i
+        crossStatus = data.crossed[myRow][myCol]  # Crossed should be in data
+        if crossStatus is None:
+            theSquare = boardObj.squares[myRow][myCol]
+            if theSquare.isalpha():  # Use alphaArray?
+                if theSquare != word[i]:
+                    return False
+            elif word[i] not in letters:
+                return False
+            else:
+                letters.remove(word[i])
+        else:
+            if word[i] not in crossStatus or word[i] not in letters:
+                return False
+            letters.remove(word[i])
+        i += 1
+    rightTile = posMove(myRow, myCol + 1)
+    if rightTile is not None and boardObj.AlphaArray()[rightTile]:  # Checks if right is not clear.
+        return False
+    return True
+
+
 def botPlay(rack, boardObj):
     """ Plays the best move possible from a given rack
 
@@ -115,24 +144,45 @@ def botPlay(rack, boardObj):
     :param boardObj: a Board() object
     :return: TBD: MoveObj?
     """
-    crossed = crossChecks(boardObj)
-    anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # IMPROVEMENT: just one betterMoveTiles.
+    data.crossed = crossChecks(boardObj)
+    anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
+    possibleMoves = []  # TODO: Make this a list of moveObjs
     for anchorRow, anchorCol in anchorList:
-        goodLetters = crossChecks[anchorRow][anchorCol]
+        goodLetters = data.crossed[anchorRow][anchorCol]  # Checking the anchor square for down restrictions
         if goodLetters is not None:
             goodAnchors = set(rack) & set(goodLetters)  # Rack letters which can be played in the anchor
+            if goodAnchors == {}:  # Can't play at this anchor
+                continue  # Does this work to quit out of the for loop?
         else:
             goodAnchors = set(rack)
         before, after = completeWord(boardObj, (anchorRow, anchorCol))
+        leftParts = []
         if before == '':
             left = posMove(anchorRow, anchorCol)
             counter = 0  # Counter is the number of free spaces you have to the left.
             while left and not anchorGrid[left]:
                 left = posMove(left[0], left[1])
                 counter += 1
-
-        else:
-            pass
-        # Either 1) The anchor left borders a placed tile / wall OR we have free space
-
-    pass
+        for anchorLetter in goodAnchors:  # going through each possible anchor
+            tilesLeft = list(rack)
+            tilesLeft.remove(anchorLetter)  # Remaining tiles on your rack
+            if before == '':  # TODO: The logic here could be cleaned up a bit (double before)
+                # This step could really blow up (around 2000 results), problematic IF COUNTER <1 ??
+                tempLeftParts = chain.from_iterable([permutations(tilesLeft, i) for i in range(0, counter + 1)])
+                # TODO: Clean up leftParts
+                leftParts = [''.join((*part, anchorLetter, after)) for part in tempLeftParts]
+                # what about having no left part???, is zero working?
+            else:
+                leftParts = [''.join((before, anchorLetter, after))]
+            for start in leftParts:
+                theseTilesLeft = list(tilesLeft)
+                for char in start:
+                    theseTilesLeft.remove(char)  # Now we know which tiles we have left to play.
+                numUsedTiles = len(start)
+                endings = data.completor(start)
+                # Going to try all possible endings, rather than try all fittings
+                # THIS IS A FORK IN THE ROAD FOR THE ALGO
+                for word in endings:
+                    # will this work when numUsedTiles == len(word) ?
+                    if checkWordMatches(numUsedTiles, word, anchorRow, anchorCol, theseTilesLeft, boardObj):
+                        possibleMoves.append(word)  # TODO: MoveObj
