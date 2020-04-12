@@ -52,9 +52,8 @@ def betterMoveTiles(boardObj, across=True, both=False):
         border = leftRight
     else:
         border = upDown
-    tileLoc = boardObj.AlphaArray()
-    surround = ndimage.generic_filter(tileLoc, border, size=(3, 3), mode='constant')
-    output = (1 - tileLoc) * surround
+    surround = ndimage.generic_filter(boardObj.alpha, border, size=(3, 3), mode='constant')
+    output = (1 - boardObj.alpha) * surround
     return output, np.transpose(output.nonzero())
 
 
@@ -71,7 +70,7 @@ def completeWord(boardObj, coord, across=True):
     posPart = ''
     while True:
         tile = posMove(row, col, across)
-        if tile and content[tile]:
+        if tile and boardObj.alpha[tile]:
             posPart += boardObj.squares[tile]
             row, col = tile
         else:
@@ -80,7 +79,7 @@ def completeWord(boardObj, coord, across=True):
     negPart = ''
     while True:
         tile = negMove(row, col, boardObj.size, across)
-        if tile and content[tile]:
+        if tile and boardObj.alpha[tile]:
             negPart += boardObj.squares[tile]
             row, col = tile
         else:
@@ -114,7 +113,7 @@ def crossChecks(boardObj):  # TODO: make it returns a list of sets
                     outArray[row][col] = works
                 else:
                     outArray[row][col] = "INVALID"
-            elif boardObj.AlphaArray()[row, col]:
+            elif boardObj.alpha[row, col]:
                 outArray[row][col] = None
     return outArray
 
@@ -141,7 +140,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
             letters.remove(word[i])
         i += 1
     rightTile = posMove(anchorRow, anchorCol + i)
-    if rightTile is not None and boardObj.AlphaArray()[rightTile]:  # Checks if right is not clear.
+    if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     return True
 
