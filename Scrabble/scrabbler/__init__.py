@@ -2,10 +2,12 @@ from scrabbler.major import core, data, algo
 from scrabbler.alphabets import dawgfiler
 import pickle
 import dawg
+import sys
 
-WWF = True
+WWF = False
 small = False
 title = 'Sparse'
+
 
 if WWF:
     data.dictfile = 'wwf'
@@ -22,14 +24,14 @@ else:
     data.startTile = True
     data.tileValues = data.sTileValues
     data.design = data.official
-    with open('./alphabets/collinsdict.pkl', 'rb') as f:
+    with open(data.path + 'alphabets/collinsdict.pkl', 'rb') as f:
         data.meaningDict = pickle.load(f)
 
-with open(f'./alphabets/{data.dictfile}_set.pkl', 'rb') as infile:
+with open(data.path + f'./alphabets/{data.dictfile}_set.pkl', 'rb') as infile:
     data.wordset = pickle.load(infile)
 
 data.completor = dawg.CompletionDAWG()
-data.completor.load(f'./alphabets/{data.dictfile}.dawg')
+data.completor.load(data.path + f'./alphabets/{data.dictfile}.dawg')
 
-gb = data.gameBoard = core.load('Sparse')
+
 # data.gameBoard = core.Board(title, data.design)

@@ -4,6 +4,8 @@
 import pickle
 import numpy as np
 from scrabbler.major import data
+import sys
+
 
 
 class Board:
@@ -61,7 +63,8 @@ class Board:
     def save(self, Name=None, Display=False):  # save objects or arrays?
         if Name is None:
             Name = self.title
-        with open(f"ScrabbleGames/{Name}.pkl", 'wb') as f1:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
+        with open(data.path + f"scrabbleGames/{Name}.pkl",
+                  'wb') as f1:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
             pickle.dump(self.squares, f1, pickle.HIGHEST_PROTOCOL)
         print(f"Game saved as {Name}\n")
         if Display:
@@ -100,7 +103,7 @@ def load(name, display=False):  # TODO: Fix loading to support objects?
     :param display: whether the loaded board is printed
     :return: BoardObj: the loaded board
     """
-    with open(f"ScrabbleGames/{name}.pkl", 'rb') as f:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
+    with open(data.path + f"scrabbleGames/{name}.pkl", 'rb') as f:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
         LoadBoard = pickle.load(f)
     loader = Board(name)  # nb set the correct base design
     if type(LoadBoard) == np.ndarray:
