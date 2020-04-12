@@ -17,7 +17,7 @@ def DisplayBoard(grid):
 
 
 def LoadGame(Name):
-    with open('ScrabbleGames/%s.pkl' % Name, 'rb') as f:
+    with open('scrabbleGames/%s.pkl' % Name, 'rb') as f:
         GameBoard = pickle.load(f)
     print("Game '%s' loaded" % Name)
     DisplayBoard(GameBoard)
@@ -27,13 +27,13 @@ a = LoadGame(name)
 
 
 def SaveJSON(Name, Game):
-    with open('ScrabbleGames/{}.json'.format(Name), 'w', encoding='utf-8') as outFile:
+    with open('scrabbleGames/{}.json'.format(Name), 'w', encoding='utf-8') as outFile:
         json.dump(Game,outFile, ensure_ascii=False, indent=4)
 
 SaveJSON(name,a.tolist())
 
 def ReadJSON(Name):
-    with open('ScrabbleGames/{}.json'.format(Name), 'r') as inFile:
+    with open('scrabbleGames/{}.json'.format(Name), 'r') as inFile:
         a = np.array(json.load(inFile))
     print(a)
     DisplayBoard(a)

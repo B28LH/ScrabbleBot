@@ -146,12 +146,12 @@ class Board():
         self.alpha = AlphaArray(self.data)
 
 def SaveGame(Board, Name=GameName):
-    with open('ScrabbleGames/%s.pkl' % Name,'wb') as f1:
+    with open('../scrabbleGames/%s.pkl' % Name, 'wb') as f1:
         pickle.dump(Board, f1, pickle.HIGHEST_PROTOCOL)
     print("Game saved as",Name)
 
 def LoadGame(Name=GameName): ## Watch out for loading a depricated Board object (or just an array)
-    with open('ScrabbleGames/%s.pkl' % Name,'rb') as f:
+    with open('../scrabbleGames/%s.pkl' % Name, 'rb') as f:
         LoadBoard = pickle.load(f)
     if type(LoadBoard) == np.ndarray:
         Loader = Board() #nb set the correct base design

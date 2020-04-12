@@ -471,13 +471,13 @@ def InputFormat(string, GameBoard):
 
 def SaveGame(GameBoard, Name=GameName):
     DisplayBoard(GameBoard)
-    with open('ScrabbleGames/%s.pkl' % Name, 'wb') as f1:
+    with open('../scrabbleGames/%s.pkl' % Name, 'wb') as f1:
         pickle.dump(GameBoard, f1, pickle.HIGHEST_PROTOCOL)
     print("Game saved as", Name)
 
 
 def LoadGame(Name=GameName):
-    with open('ScrabbleGames/%s.pkl' % Name, 'rb') as f:
+    with open('../scrabbleGames/%s.pkl' % Name, 'rb') as f:
         GameBoard = pickle.load(f)
     print("Game '%s' loaded" % Name)
     DisplayBoard(GameBoard)

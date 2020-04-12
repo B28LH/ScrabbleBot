@@ -1,5 +1,5 @@
 import scrabbler
-from scrabbler.helpers import core, data, algo
+from scrabbler.major import core, data, algo
 import pickle
 import dawg
 
@@ -22,11 +22,11 @@ if scrabbler.WWF:
     else:
         data.design = data.friendsBig
 else:
-    with open('./Alphabets/collinsdict.pkl', 'rb') as f:
+    with open('./alphabets/collinsdict.pkl', 'rb') as f:
         data.meaningdict = pickle.load(f)
 
-# data.gameBoard = core.Board(title, data.design)
-with open(f'./Alphabets/{data.dictfile}', 'r') as infile:
+# data.gameBoard = core.Board(title, data.design), if wanting a fresh board
+with open(f'./alphabets/{data.dictfile}', 'r') as infile:
     data.wordset = set(infile.read().split())
 
 data.dawg = dawg.DAWG(data.wordset)

@@ -1,6 +1,6 @@
 import scrabbler
 import dawg
-from scrabbler.helpers import core, data, algo
+from scrabbler.major import core, data, algo
 import pickle
 
 # Should this all belong in the __init__.py ???

@@ -1,290 +1,192 @@
 from itertools import permutations as pm
 from collections import Counter
-from scipy import ndimage
+from PyDictionary import PyDictionary
 from bisect import bisect_left
-from heapq import heappush, heappop
-from itertools import count
 import numpy as np
 import random
 import re
 import string
 import pickle
 
+EngDict = PyDictionary()
 
-AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
-WWF = False  # Playing Words With Friends or traditional Scrabble
-Small = False  # Small or large board
+AddOn = [(1,0),(0,1),(-1,0),(0,-1)] #For surrounding tiles
+WWF = True #Playing Words With Friends or traditional Scrabble
+Small = False #Small or large board
 MaxTile = 7
-GameName = 'Oscar2'
-Alphabet = string.ascii_letters
+GameName = 'test4'
 
-
-def binsrch2(lst, item):
-    return (item <= lst[-1]) and (lst[bisect_left(lst, item)] == item)
+#def binsrch2(lst, item):
+#return (item <= lst[-1]) and (lst[bisect_left(lst, item)] == item)
 
 
 STileValues = {"a": 1, "c": 3, "b": 3, "e": 1, "d": 2, "g": 2,
-               "f": 4, "i": 1, "h": 4, "k": 5, "j": 8, "m": 3,
-               "l": 1, "o": 1, "n": 1, "q": 10, "p": 3, "s": 1,
-               "r": 1, "u": 1, "t": 1, "w": 4, "v": 4, "y": 4,
-               "x": 8, "z": 10}
+         "f": 4, "i": 1, "h": 4, "k": 5, "j": 8, "m": 3,
+         "l": 1, "o": 1, "n": 1, "q": 10, "p": 3, "s": 1,
+         "r": 1, "u": 1, "t": 1, "w": 4, "v": 4, "y": 4,
+         "x": 8, "z": 10}
+
 
 WTileValues = {"a": 1, "c": 4, "b": 4, "e": 1, "d": 2, "g": 3,
-               "f": 4, "i": 1, "h": 3, "k": 5, "j": 10, "m": 4,
-               "l": 2, "o": 1, "n": 2, "q": 10, "p": 4, "s": 1,
-               "r": 1, "u": 2, "t": 1, "w": 4, "v": 5, "y": 3,
-               "x": 8, "z": 10}
+         "f": 4, "i": 1, "h": 3, "k": 5, "j": 10, "m": 4,
+         "l": 2, "o": 1, "n": 2, "q": 10, "p": 4, "s": 1,
+         "r": 1, "u": 2, "t": 1, "w": 4, "v": 5, "y": 3,
+         "x": 8, "z": 10}
+
 
 bagamts = {"a": 9, "c": 2, "b": 2, "e": 12, "d": 4, "g": 3,
-           "f": 2, "i": 9, "h": 2, "k": 1, "j": 1, "m": 2,
-           "l": 4, "o": 8, "n": 6, "q": 1, "p": 2, "s": 4,
-           "r": 6, "u": 4, "t": 6, "w": 2, "v": 2, "y": 2,
-           "x": 1, "z": 1}
-
-# Creation of boards
-# Notation: *x is double ^x is triple, multiplier can be keyword
-# Board: ! is double word, # is triple, ? is start
-
-Official = ['#--*---#', '-!---^--', '--!---*-', '*--!---*', '----!---', '-^---^--', '--*---*-', '#--*---?']
-FriendsSmall = ['^-#---', '-*---*', '#-^-*-', '---^--', '--*---', '-*---?']
-FriendsBig = ['---#--^-', '--*--!--', '-*--*---', '#--^---!', '--*---*-', '-!---^--', '^---*---', '---!---?']
-
-Official = np.array([list(x) for x in Official])
-FriendsSmall = np.array([list(x) for x in FriendsSmall])
-FriendsBig = np.array([list(x) for x in FriendsBig])
+         "f": 2, "i": 9, "h": 2, "k": 1, "j": 1, "m": 2,
+         "l": 4, "o": 8, "n": 6, "q": 1, "p": 2, "s": 4,
+         "r": 6, "u": 4, "t": 6, "w": 2, "v": 2, "y": 2,
+         "x": 1, "z": 1}
 
 if WWF:
     file = 'wwf.txt'
     allTileBonus = 35
     startTile = False
     TileValues = WTileValues
-    if Small:
-        Design = FriendsSmall
-    else:
-        Design = FriendsBig
-
 else:
     file = 'scra.txt'
     allTileBonus = 50
     startTile = True
     TileValues = STileValues
-    Design = FriendsBig
 
-with open(file, 'r') as file:
-    words = set(file.read().split())
+for char in string.ascii_uppercase:
+    TileValues[char] = 0
+
+def Refresh():
+    global TileBag
+    TileBag = list(Counter(bagamts).elements())
+    random.shuffle(TileBag)
+
+def TakeTiles(numb): #Could definitely clean this up
+    random.shuffle(TileBag)
+    numb = min(numb,len(TileBag))
+    out = []
+    for i in range(numb):
+        out.append(TileBag.pop())
+    return out
 
 
-def AlphaArray(arr):
-    return np.isin(arr, list(string.ascii_letters)).astype(int)
 
+        
+# Notation: *x is double ^x is triple, multiplier can be keyword, capital is blank
+# Board: ! is double word, # is triple, ? is start
+FirstQuad = ['#--*---#','-!---^--','--!---*-',
+     '*--!---*','----!---','-^---^--',
+     '--*---*-','#--*---?']
 
-def ValidNear(xC, yC):
-    t = [(xC + x[0], yC + x[1]) for x in AddOn]
+FriendsSmall = ['^-#---','-*---*','#-^-*-','---^--','--*---','-*---?']
+FriendsBig = ['---#--^-','--*--!--','-*--*---','#--^---!','--*---*-',
+              '-!---^--','^---*---','---!---?']
+
+if WWF:
+    if Small:
+        chosen = FriendsSmall
+    else:
+        chosen = FriendsBig
+else:
+    chosen = FirstQuad
+b2 = [x+x[-2::-1] for x in chosen]
+for item in b2[-2::-1]:
+    b2.append(item)
+
+width = len(b2[0]) #VERY important variable
+
+StartBoard = np.array([list(x) for x in b2])
+GameBoard = np.copy(StartBoard)
+
+with open(file,'r') as file:
+    words = file.read().split()
+    words = set(words)
+
+def binsrch2(words,item):
+    return item in words
+
+def DisplayBoard(grid):
+    h = range(len(grid))
+    if len(grid) < 10:
+        print('    '+'|'.join(map(str,h)))
+    else:
+        print('    '+'|'.join([x[0] if int(x) > 9 else ' ' for x in map(str,h)]))
+        print('    '+'|'.join([x[1] if int(x) > 9 else x for x in map(str,h)]))
+    for i,x in enumerate(grid):
+        if i < 10: i = str(i)+' '
+        print(i,'|'+ ' '.join(x))
+
+DisplayBoard(StartBoard)
+
+def ValidNear(xCord, yCord):
+    t = [(xCord + x[0], yCord + x[1]) for x in AddOn]
     return [x for x in t if 0 <= x[0] < width and 0 <= x[1] < width]
 
+def ValidVert(xCord, yCord):
+    return [x for x in ((xCord+1,yCord),(xCord-1,yCord)) if 0 <= x[0] < width and 0 <= x[1] < width]
 
-def ValidVert(xC, yC):
-    return [x for x in ((xC + 1, yC), (xC - 1, yC)) if 0 <= x[0] < width and 0 <= x[1] < width]
-
-
-def ValidHorz(xC, yC):
-    return [x for x in ((xC, yC + 1), (xC, yC - 1)) if 0 <= x[0] < width and 0 <= x[1] < width]
+def ValidHorz(xCord, yCord):
+    return [x for x in ((xCord,yCord+1),(xCord,yCord-1)) if 0 <= x[0] < width and 0 <= x[1] < width]
 
 
-class Board:
-    def __init__(self, design=Official):  # takes the design and expands it into a full board
-        r, c = design.shape
-        global width
-        self.data = np.pad(design, ((0, r - 1), (0, c - 1)), 'reflect')
-        self.alpha = AlphaArray(self.data)
-        self.size = width = len(self.data)
-        self.design = design
-
-    def __str__(self):
-        Indicies = list(map(str, range(self.size)))
-        output = ''
-        if self.size < 10:
-            output += '    ' + '|'.join(Indicies)
-        else:
-            output += '    ' + '|'.join([x[0] if int(x) > 9 else ' ' for x in Indicies]) + '\n'
-            output += '    ' + '|'.join([x[1] if int(x) > 9 else x for x in Indicies]) + '\n'
-        for i, x in enumerate(self.data):
-            if i < 10: i = str(i) + ' '
-            output += str(i) + ' |' + ' '.join(x) + '\n'
-        return output
-
-    def __repr__(self):
-        return str(self)
-
-    def __setitem__(self, index, value):
-        self.data[index] = value
-        self.alpha = AlphaArray(self.data)
-
-    def __getitem__(self, index):
-        return self.data[index]
-
-    def Layer(self, across, coords, word):
-        WordLen = len(word)
-        xC, yC = coords
-        if across:
-            assert yC + WordLen <= self.size, "Too large"
-            self.data[xC, yC:yC + WordLen] = list(word)
-        else:  # down
-            assert xC + WordLen <= self.size, "Too large"
-            self.data[xC:xC + WordLen, yC] = list(word)
-        self.alpha = AlphaArray(self.data)
-
-# :(
-class Tile:
-    def __init__(self, parentBoardObj, xC, yC):
-        self.xC, self.yC = xC, yC
-        self.parent = parentBoardObj
-
-    def __getitem__(self, index):
-        return self.parent[index]
-
-    @property
-    def alpha(self):
-        return self.parent.alpha[self.xC,self.yC]
-
-    def Up(self):
-        if self.xC > 0:
-            return self.parent[self.xC-1,self.yC]
-        else:
-            return False
-
-    def Down(self):
-        if self.xC < self.parent.size - 1:
-            return self.parent[self.xC+1,self.yC]
-        else:
-            return False
-
-    def Left(self):
-        if self.yC > 0:
-            return self.parent[self.xC,self.yC-1]
-        else:
-            return False
-
-    def Right(self):
-        if self.yC < self.parent.size - 1:
-            return self.parent[self.xC,self.yC+1]
-        else:
-            return False
-
-
-
-
-
-
-def SaveGame(BoardObj, Name=GameName):
-    with open('ScrabbleGames/%s.pkl' % Name, 'wb') as f1:
-        pickle.dump(BoardObj, f1, pickle.HIGHEST_PROTOCOL)
-    print("Game saved as", Name)
-
-
-def LoadGame(Name=GameName):  ## Watch out for loading a depricated Board object (or just an array)
-    with open('ScrabbleGames/%s.pkl' % Name, 'rb') as f:
-        LoadBoard = pickle.load(f)
-    if type(LoadBoard) == np.ndarray:
-        Loader = Board()  # nb set the correct base design
-        Loader.data = LoadBoard
-        Loader.alpha = AlphaArray(Loader.data)
-        LoadBoard = Loader
-    print("Game '%s' loaded \n" % Name)
-    print(LoadBoard)
-    return LoadBoard
-
-
-def BetterMoveTiles(Board):
-    """ Finds the tiles on the board which are adjacent to letter
-    (up down left right). If '?' is available, that is selected.
-    Returns a array:
-        0: No letter borders (or a letter itself)
-        1: Vertical border
-        2: Horizontal border
-        3: Vertical and Horizontal Border
-    and a list of the co-ordinates of non-zero cells
-    """
-    Starters = np.where(Board.data == '?', -1, 0)
-    if np.any(Starters):
-        return Starters, np.transpose(Starters.nonzero())
-    TileLoc = np.isin(Board.data, list(string.ascii_letters)).astype(int)
-    Borders = lambda a: np.sum(np.unique(a * np.r_[0, 1, 0, 2, 0, 2, 0, 1, 0]))
-    Surround = ndimage.generic_filter(TileLoc, Borders, size=(3, 3), mode='constant')
-    Output = (1 - TileLoc) * Surround
-    return Output, np.transpose(Output.nonzero())
-
-
-def WordChain(BoardObj, xC, yC, isVertical):
-    """ Returns all neighbouring letters in the specified direction from a given coordinate """
-    Alpha = BoardObj.alpha
-    Words = BoardObj.data
-    if not Alpha[xC, yC]:
+#Puts down a word horizontally from xC, yC
+def LayAcross(xC, yC, word, GameBoard): #fix this
+    n = len(word)
+    if yC + n > width:
         return False
-    if isVertical:
-        Alpha = np.transpose(Alpha)
-        Words = np.transpose(Words)
-        xC, yC = yC, xC
-    MoverPos = MoverNeg = yC
-    while Alpha[xC, MoverPos]:
-        MoverPos += 1
-        if MoverPos == BoardObj.size:
-            break
-    while Alpha[xC, MoverNeg]:
-        MoverNeg -= 1
-        if MoverNeg < 0:
-            break
-    return Words[xC, MoverNeg+1:MoverPos]
+    bit = GameBoard[xC]
+    for i in range(n):
+        bit[yC+i] = word[i]
+    GameBoard[xC] = bit
+    return GameBoard
 
+def LayDown(xC, yC, word, GameBoard):
+    n = len(word)
+    if xC + n > width:
+        return False
+    GameBoard[xC:xC+n,yC] = list(word)
+    return GameBoard
 
-
-
-
-
-
-
-
-
-
-def Distances(BoardObj, Vertical):
-    """ If Vertical is True, returns the vertical distances from each cell to
-    the nearest letter (from Board.alpha). Else evaluates horizontallly.
-    Returns a numpy array the same size as Board.alpha """
-    DistBoard = np.copy(BoardObj.alpha)
-    queue = []
-    c = count()
-    if Vertical:
-        BorderCells = ValidVert
+def Layer(Orient, xC, yC, word, GameBoard):
+    if Orient == 1:
+        return LayDown(xC,yC,word,GameBoard)
     else:
-        BorderCells = ValidHorz
+        return LayAcross(xC,yC,word,GameBoard)
 
-    Letters = np.transpose(np.where(DistBoard))  # All existing letter indices
-    for index in Letters:
-        heappush(queue, (1, next(c), index, None))  # Adds letters to queue
-    while queue:
-        value, __, index, parents = heappop(queue)
-        for neighbour in BorderCells(index[0], index[1]):
-            if (DistBoard != 0)[neighbour]:  # check that the cell hasn't been covered yet
-                continue
-            heappush(queue, (value + 1, next(c), neighbour, index))
-            DistBoard[neighbour] = value + 1
-    return DistBoard - 1
+# Finds the possible start tiles, returns a board and a list
+# 3 means both, 2 is vertical, 1 is horizontal, 0 is none, -1 is start
+def MoveTiles(GameBoard):
+    StartingSquares = np.zeros((width,width))
+    StartTilesList = []
+    wid = range(width)
+    for xCord in wid:
+        for yCord in wid:
+            if GameBoard[xCord][yCord] == '?':
+                StartingSquares[xCord][yCord] = -1
+                return (StartingSquares, [(xCord,yCord)])
+            elif not GameBoard[xCord][yCord].isalpha():
+                Vertical = any([GameBoard[x1][y1].isalpha() for x1,y1 in ValidVert(xCord,yCord)])
+                Horizontal = any([GameBoard[x1][y1].isalpha() for x1,y1 in ValidHorz(xCord,yCord)])
+                if Vertical or Horizontal:
+                    StartTilesList.append((xCord,yCord))
+                if Vertical and Horizontal:
+                    StartingSquares[xCord][yCord] = 3
+                elif Horizontal:
+                    StartingSquares[xCord][yCord] = 2
+                elif Vertical:
+                    StartingSquares[xCord][yCord] = 1
+    return (StartingSquares, StartTilesList)
 
-
-NewGame = LoadGame()
-BetterMoveTiles(NewGame)
-print(Distances(NewGame, True))
-
-'''
-
-###---------Under Development--------
+#Easy Fix
 def GetWork(row, col, GameBoard, Across): #Returns Workspace and start (entire row/columm)
-    if Across: return (GameBoard[row,:], col)
-    else: return (GameBoard[:,col],row)
+    if Across:
+        Workspace = list(GameBoard[row])
+        Start = col
+    else:
+        Workspace = [GameBoard[i][col] for i in range(width)]
+        Start = row
+    return (Workspace,Start)
 
-
-def FindAll(Board, row, col, across): #Across = False means vert
-    Workspace, Start = Board.provide(row, col, across)
+def FindAll(row, col, GameBoard, Across): #Across = False means vert
+    Workspace, Start = GetWork(row, col, GameBoard, Across)
     initial = Workspace[Start]
     if initial.isalpha():
         output = [initial]
@@ -300,7 +202,7 @@ def FindAll(Board, row, col, across): #Across = False means vert
         Second += 1
     return (''.join(output), Start+1)
 
-def NumGen(Length, Pos):
+def NumGen(Length, Pos): #Provides all possible subsets of from a position
     AllPos = []
     for i in range(1,Length+2):
         for x in range(Length-i+1):
@@ -309,33 +211,37 @@ def NumGen(Length, Pos):
 
 def TestStart(item, GameBoard):
     if not item[0][0].isalpha():
-        xC, yC = item[1][1][0], item[1][1][1]
+        xCord, yCord = item[1][1][0], item[1][1][1]
         if item[1][0] == 1:
-            xC -= 1
+            xCord -= 1
         else:
-            yC -= 1
-        if xC >= 0 and yC >= 0 and GameBoard[xC][yC].isalpha():
+            yCord -= 1
+        if xCord >= 0 and yCord >= 0 and GameBoard[xCord][yCord].isalpha():
             return False
     return True
 
 def TestEnd(item, GameBoard):
     if not item[0][-1].isalpha():
-        xC, yC = item[1][2][0], item[1][2][1]
+        xCord, yCord = item[1][2][0], item[1][2][1]
         if item[1][0] == 1:
-            xC += 1
+            xCord += 1
         else:
-            yC += 1
-        if xC < width and yC < width and GameBoard[xC][yC].isalpha():
+            yCord += 1
+        if xCord < width and yCord < width and GameBoard[xCord][yCord].isalpha():
             return False
     return True
 
-def BothWays(row, col, Board, i, MoveBoard, length):#1 = Vert, 2 = Horz
+#All possible places to play from a given r,c and length
+def BothWays(row, col, GameBoard, i, MoveBoard, length):#1 = Vert, 2 = Horz
     Work, Pos = GetWork(row, col, GameBoard, i==2)
     if i == 1: #Vertical
+        # Returns all possible play tiles (i.e -*p-), their orientation and start and end points
         Splits = [(Work[a:b],(i,(a,col),(b,col))) for a,b in NumGen(len(Work),Pos)]
     else: #Horizontal
         Splits = [(Work[a:b],(i,(row,a),(row,b))) for a,b in NumGen(len(Work),Pos)]
+    #Ensures all splits contains a letter    
     Splits = [x for x in Splits if [y.isalpha() for y in x[0]].count(0) <= length and len(x[0]) > 1]
+    #ensures that the start and end aren't next to a filled in tile
     Splits = [x for x in Splits if TestStart(x, GameBoard) and TestEnd(x, GameBoard)]
     Result = MoveBoard[row][col]
     Truth = FindAll(row, col, GameBoard, i==2)[0]
@@ -420,24 +326,21 @@ def Score(Direction,Start,Word,GameBoard,AllUsed,MoveBoard):
         total += allTileBonus
     return total
 
-
-def BestMove(Tiles, Board):
-    ### Fix?
+def BestMove(Tiles, GameBoard):
     if '&' in Tiles:
         alternate = list(Tiles)
         alternate.remove('&')
         master = []
-        for item in Alphabet:
+        for item in string.ascii_uppercase:
             newTiles = alternate + [item]
-            a = BestMove(newTiles,Board)[-7:]
+            a = BestMove(newTiles,GameBoard)[-7:]
             if a:
                 master.extend(a)
         if len(master) > 0:
             return sorted(master, key=lambda x: x[-1])
         return False
-    ##
     Moves = []
-    MoveBoard, GoodTiles = BetterMoveTiles(Board)
+    MoveBoard, GoodTiles = MoveTiles(GameBoard)
     SolvedCases = {}
     for row,col in GoodTiles:
         Section = []
@@ -446,10 +349,10 @@ def BestMove(Tiles, Board):
                 Section.append(item)
         for item in Section:
             valids = []
-            fills = [x.isalpha() for x in item[0]].count(0)
-            if fills not in SolvedCases:
+            fills = [x.isalpha() for x in item[0]].count(0) #number of blanks in selection
+            if fills not in SolvedCases: #generates new permuations
                 SolvedCases[fills] = list(set([''.join(x) for x in list(set(pm(Tiles,fills)))]))
-            for part in SolvedCases[fills]:
+            for part in SolvedCases[fills]: #building out the new word
                 a, attempt = 0, ''
                 for char in item[0]:
                     if char.isalpha():
@@ -518,7 +421,7 @@ def play(MyLetters,GameBoard):
         Layer(MyMove[0],MyMove[1][0],MyMove[1][1],MyMove[2],GameBoard)
         DisplayBoard(GameBoard)
         print(list(reversed(TheMoves[-10:]))) #Do I need to print all the other options?
-        DisplayMeaning(MyMove[2])
+        #DisplayMeaning(MyMove[2])
     else:
         print("With letters %s,\nI cannot play a move" % (' '.join(MyLetters)))
 
@@ -535,6 +438,18 @@ def InputFormat(string,GameBoard):
 
 def isWord(word):
     print(binsrch2(words,word.lower()))
+
+def SaveGame(GameBoard, Name=GameName):
+    with open('../scrabbleGames/%s.pkl' % Name, 'wb') as f1:
+        pickle.dump(GameBoard, f1, pickle.HIGHEST_PROTOCOL)
+    print("Game saved as",Name)
+
+def LoadGame(GameBoard, Name=GameName):
+    with open('../scrabbleGames/%s.pkl' % Name, 'rb') as f:
+        GameBoard = pickle.load(f)
+    print("Game '%s' loaded" % Name)
+    DisplayBoard(GameBoard)
+    return GameBoard
 
 def MoveEval(Word,Tiles,GameBoard,CompMoves):
     testGame = np.copy(GameBoard)
@@ -572,8 +487,12 @@ def CheckInput(initial,GameBoard,Play):
     else:
         print("Not a valid move")
 
-###---------Area to play in------------####
+import cProfile
+GameBoard = LoadGame(GameBoard,'Oscar2')
+cProfile.run('play("asdflet",GameBoard)',sort=1)
 
+###---------Area to play in------------####
+'''
 
 #Wipe GameBoard
 GameBoard = np.copy(StartBoard)
@@ -582,31 +501,28 @@ GameBoard = np.copy(StartBoard)
 DisplayBoard(GameBoard)
 
 #Save the game, name defaults to GameName
-SaveGame(GameBoard)
+SaveGame(GameBoard,'Oscar1')
 
 #Load a previous game. Second variable is the name of the file (optional)
-GameBoard = LoadGame(GameBoard)
+GameBoard = LoadGame(GameBoard, 'Oscar2')
 
 #Check if a word is valid
-isWord('ia')
+isWord('oiler')
 
 # Lookup word in dictionary
-DisplayMeaning("kai")
+DisplayMeaning("neuritis")
 
 # Check to see if a given play is valid: CheckInput(initial,GameBoard,Play)
 # initial is a move string ('d 5 6 rosey' (row,column))
 # GameBoard is the board
 # Play is True when you want the move to be entered, False if just check
-Choice = 'a 2 1 roam'
+Choice = 'a 14 1 kerns'
 CheckInput(Choice,GameBoard,True)
-
-
 # Computer's letters (a blank is denoted by &)
-BotLetters = list('yifighi')
+BotLetters = list('kernsgn')
 
 # Ask the Computer to play a move
-play(BotLetters,GameBoard)
-
+#play(BotLetters,GameBoard)
 
 
 # Ranking a human move
@@ -618,12 +534,133 @@ Evaluation = MoveEval(HumanPlay,list(HumanLetters),GameBoard,False)
 
 # For the second+ evaluation
 MoveEval(HumanPlay,list(HumanLetters),GameBoard,Evaluation)
+'''
 
-#Letters to try: 'r&qotia'
+###--------Benchmark computation------
 '''
-###---------Runtime data from scrabble2--------
+import cProfile
+GameBoard = LoadGame(GameBoard,'Oscar2')
+cProfile.run('play("asdflet",GameBoard)',sort=1)
 '''
-from a blank on Oscar2
+
+###--------------Output---------------
+'''
+64473219 function calls in 30.273 seconds
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1   17.047   17.047   30.278   30.278 scrabble2.py:323(BestMove)
+  5799517    5.818    0.000    5.818    0.000 {built-in method _bisect.bisect_left}
+ 46529872    3.724    0.000    3.724    0.000 {method 'isalpha' of 'str' objects}
+  5799517    2.011    0.000    7.829    0.000 scrabble2.py:19(binsrch2)
+  5799517    0.663    0.000    0.663    0.000 {method 'lower' of 'str' objects}
+    24886    0.216    0.000    0.216    0.000 scrabble2.py:178(<listcomp>)
+    47709    0.171    0.000    0.387    0.000 scrabble2.py:173(GetWork)
+    47595    0.150    0.000    0.580    0.000 scrabble2.py:182(FindAll)
+    15254    0.127    0.000    0.947    0.000 scrabble2.py:251(AllGood)
+    30294    0.083    0.000    0.083    0.000 {built-in method numpy.core.multiarray.array}
+    19409    0.050    0.000    0.053    0.000 scrabble2.py:125(LayAcross)
+    10886    0.036    0.000    0.038    0.000 scrabble2.py:135(LayDown)
+     1965    0.029    0.000    0.098    0.000 scrabble2.py:294(Score)
+     3079    0.017    0.000    0.017    0.000 scrabble2.py:271(Convert)
+    63119    0.016    0.000    0.016    0.000 {method 'join' of 'str' objects}
+   106301    0.014    0.000    0.014    0.000 {method 'append' of 'list' objects}
+    30294    0.012    0.000    0.095    0.000 function_base.py:1461(copy)
+    84790    0.011    0.000    0.011    0.000 {built-in method builtins.len}
+    15255    0.010    0.000    0.059    0.000 scrabble2.py:142(Layer)
+     8342    0.008    0.000    0.008    0.000 scrabble2.py:263(<listcomp>)
+      114    0.007    0.000    0.020    0.000 scrabble2.py:237(<listcomp>)
+     4733    0.005    0.000    0.005    0.000 scrabble2.py:259(<listcomp>)
+     2242    0.005    0.000    0.006    0.000 scrabble2.py:346(<listcomp>)
+      114    0.004    0.000    0.007    0.000 scrabble2.py:199(NumGen)
+      114    0.004    0.000    0.056    0.000 scrabble2.py:229(BothWays)
+     3310    0.004    0.000    0.004    0.000 scrabble2.py:206(TestStart)
+      912    0.003    0.000    0.003    0.000 scrabble2.py:299(<listcomp>)
+     2939    0.003    0.000    0.003    0.000 scrabble2.py:217(TestEnd)
+        7    0.003    0.000    0.006    0.001 scrabble2.py:348(<listcomp>)
+     7605    0.003    0.000    0.003    0.000 {method 'count' of 'list' objects}
+      114    0.002    0.000    0.002    0.000 scrabble2.py:204(<listcomp>)
+      869    0.002    0.000    0.002    0.000 scrabble2.py:315(<listcomp>)
+      114    0.002    0.000    0.009    0.000 scrabble2.py:239(<listcomp>)
+     1808    0.001    0.000    0.007    0.000 re.py:286(_compile)
+       57    0.001    0.000    0.001    0.000 scrabble2.py:233(<listcomp>)
+       57    0.001    0.000    0.001    0.000 scrabble2.py:235(<listcomp>)
+     1808    0.001    0.000    0.001    0.000 {method 'search' of '_sre.SRE_Pattern' objects}
+     1808    0.001    0.000    0.009    0.000 re.py:179(search)
+       69    0.001    0.000    0.001    0.000 socket.py:333(send)
+        1    0.001    0.001    0.002    0.002 scrabble2.py:150(MoveTiles)
+       54    0.001    0.000    0.005    0.000 sre_compile.py:557(compile)
+       54    0.001    0.000    0.001    0.000 sre_parse.py:470(_parse)
+       54    0.000    0.000    0.002    0.000 sre_parse.py:844(parse)
+        1    0.000    0.000    0.001    0.001 {built-in method builtins.sorted}
+       54    0.000    0.000    0.001    0.000 sre_compile.py:482(_compile_info)
+      108    0.000    0.000    0.001    0.000 enum.py:801(__and__)
+        1    0.000    0.000   30.280   30.280 scrabble2.py:410(play)
+       54    0.000    0.000    0.000    0.000 sre_parse.py:173(getwidth)
+       19    0.000    0.000    0.002    0.000 {built-in method builtins.print}
+      181    0.000    0.000    0.000    0.000 scrabble2.py:160(<listcomp>)
+      181    0.000    0.000    0.000    0.000 scrabble2.py:161(<listcomp>)
+      242    0.000    0.000    0.000    0.000 sre_parse.py:232(__next)
+       54    0.000    0.000    0.001    0.000 sre_parse.py:407(_parse_sub)
+       54    0.000    0.000    0.000    0.000 sre_parse.py:223(__init__)
+      446    0.000    0.000    0.000    0.000 {built-in method builtins.isinstance}
+      216    0.000    0.000    0.000    0.000 enum.py:515(__new__)
+      216    0.000    0.000    0.000    0.000 enum.py:265(__call__)
+       69    0.000    0.000    0.001    0.000 iostream.py:195(schedule)
+       54    0.000    0.000    0.000    0.000 sre_compile.py:64(_compile)
+       68    0.000    0.000    0.002    0.000 iostream.py:366(write)
+       54    0.000    0.000    0.001    0.000 sre_compile.py:542(_code)
+       69    0.000    0.000    0.000    0.000 threading.py:1104(is_alive)
+     1445    0.000    0.000    0.000    0.000 scrabble2.py:370(<lambda>)
+      181    0.000    0.000    0.000    0.000 scrabble2.py:118(<listcomp>)
+       54    0.000    0.000    0.000    0.000 {built-in method _sre.compile}
+       54    0.000    0.000    0.000    0.000 sre_parse.py:76(__init__)
+      181    0.000    0.000    0.000    0.000 scrabble2.py:121(<listcomp>)
+      181    0.000    0.000    0.000    0.000 scrabble2.py:117(ValidVert)
+      162    0.000    0.000    0.000    0.000 {built-in method builtins.min}
+      181    0.000    0.000    0.000    0.000 scrabble2.py:120(ValidHorz)
+      188    0.000    0.000    0.000    0.000 sre_parse.py:171(append)
+      108    0.000    0.000    0.000    0.000 sre_compile.py:539(isstring)
+       54    0.000    0.000    0.000    0.000 sre_parse.py:828(fix_flags)
+      188    0.000    0.000    0.000    0.000 sre_parse.py:253(get)
+       54    0.000    0.000    0.000    0.000 sre_compile.py:414(_get_literal_prefix)
+       69    0.000    0.000    0.000    0.000 {method 'acquire' of '_thread.lock' objects}
+        1    0.000    0.000    0.002    0.002 scrabble2.py:100(DisplayBoard)
+       29    0.000    0.000    0.000    0.000 sre_compile.py:393(_generate_overlap_table)
+       54    0.000    0.000    0.000    0.000 sre_parse.py:111(__init__)
+        1    0.000    0.000   30.281   30.281 {built-in method builtins.exec}
+        1    0.000    0.000   30.281   30.281 <string>:1(<module>)
+      108    0.000    0.000    0.000    0.000 sre_parse.py:81(groups)
+       54    0.000    0.000    0.000    0.000 sre_parse.py:285(tell)
+       68    0.000    0.000    0.000    0.000 iostream.py:300(_is_master_process)
+       69    0.000    0.000    0.000    0.000 threading.py:1062(_wait_for_tstate_lock)
+      362    0.000    0.000    0.000    0.000 {built-in method builtins.any}
+       68    0.000    0.000    0.000    0.000 iostream.py:313(_schedule_flush)
+      134    0.000    0.000    0.000    0.000 {built-in method builtins.ord}
+       54    0.000    0.000    0.000    0.000 sre_parse.py:248(match)
+       25    0.000    0.000    0.000    0.000 sre_compile.py:441(_get_charset_prefix)
+       69    0.000    0.000    0.000    0.000 iostream.py:93(_event_pipe)
+       69    0.000    0.000    0.000    0.000 {method 'append' of 'collections.deque' objects}
+       68    0.000    0.000    0.000    0.000 {built-in method posix.getpid}
+       54    0.000    0.000    0.000    0.000 {method 'items' of 'dict' objects}
+       58    0.000    0.000    0.000    0.000 {method 'extend' of 'list' objects}
+        1    0.000    0.000    0.000    0.000 scrabble2.py:105(<listcomp>)
+       69    0.000    0.000    0.000    0.000 threading.py:506(is_set)
+        1    0.000    0.000    0.000    0.000 scrabble2.py:106(<listcomp>)
+        1    0.000    0.000    0.000    0.000 {built-in method numpy.core.multiarray.zeros}
+        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+'''
+
+
+###--------Very long computation------
+'''
+import cProfile
+GameBoard = LoadGame(GameBoard, 'Oscar2')
+BotLetters = list('ker&sgn')
+cProfile.run("play(BotLetters,GameBoard)",sort=1)
+'''
+
+
+###---------Output---------
+'''
 ncalls  tottime  percall  cumtime  percall filename:lineno(function)
      27/1  503.582   18.651  880.657  880.657 scrabble2.py:318(BestMove)
 150295444  163.796    0.000  163.796    0.000 {built-in method _bisect.bisect_left}
@@ -698,50 +735,5 @@ ncalls  tottime  percall  cumtime  percall filename:lineno(function)
         1    0.000    0.000    0.000    0.000 scrabble2.py:106(<listcomp>)
         1    0.000    0.000    0.000    0.000 {method 'remove' of 'list' objects}
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
-
-###-------------Deprecated functions--------------
-# Finds the possible start tiles, returns a board and a list
-# 3 means both, 2 is vertical, 1 is horizontal, 0 is none, -1 is start
-
-def MoveTiles(Board):
-    global width
-    width = len(Board)
-    StartingSquares = np.zeros((width,width))
-    StartTilesList = []
-    wid = range(width)
-    for xC in wid:
-        for yC in wid:
-            if Board[xC,yC] == ',':
-                StartingSquares[xC,yC] = -1
-                return (StartingSquares, [(xC,yC)])
-            elif not Board[xC,yC].isalpha():
-                Vertical = any([Board[x1,y1].isalpha() for x1,y1 in ValidVert(xC,yC)])
-                Horizontal = any([Board[x1,y1].isalpha() for x1,y1 in ValidHorz(xC,yC)])
-                if Vertical or Horizontal:
-                    StartTilesList.append((xC,yC))
-                if Vertical and Horizontal:
-                    StartingSquares[xC,yC] = 3
-                elif Horizontal:
-                    StartingSquares[xC,yC] = 2
-                elif Vertical:
-                    StartingSquares[xC,yC] = 1
-    return (StartingSquares, StartTilesList)
-
-
-# Timing BetterMoveTiles
-def QuadFlip(design):
-    r,c = design.shape
-    return np.pad(design,((0,r-1),(0,c-1)),'reflect')
-
-Official[1:7,2] = list('random')
-Official
-BigFlip = np.copy(Official)
-i = 12
-for _ in range(i):
-    BigFlip = QuadFlip(BigFlip)
-BoardBig = Board(BigFlip)
-#cProfile.run('MoveTiles(BoardBig.data)',sort=1)
-cProfile.run('BetterMoveTiles(BoardBig)',sort=1)
-
 
 '''
