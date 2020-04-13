@@ -12,4 +12,5 @@ TO EXECUTE THE MAIN FILE:
 >>> runpy.run_module(mod_name='scrabbler')
 """
 
-
+gb = data.gameBoard = core.load('ThreeWords')
+results = algo.botPlay('trial', gb)

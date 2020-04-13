@@ -66,7 +66,6 @@ def completeWord(boardObj, coord, across=True):
     :return: before, after, both strings, representing the contiguous tiles above/left and down/right
     """
     row, col = coord
-    content = boardObj.AlphaArray()
     posPart = ''
     while True:
         tile = posMove(row, col, across)
@@ -93,12 +92,12 @@ def crossChecks(boardObj):  # TODO: make it returns a list of sets
     :param boardObj:
     :return: outArray, a (NON NUMPY) array:
         1) If the cell is occupied by a letter, is None
-        2) If the cell is not affected by any vertical collisions, is False
+        2) If the cell is not affected by any vertical collisions, is "CLEAR"
         3) If the cell is affected by any vertical collisions, a set of valid tiles to place (CANNOT BE EMPTY)
         4) If the cell is affected by vertical collisions and no tile can be place, is INVALID
 
     """
-    outArray = [[False for _ in range(boardObj.size)] for _ in range(boardObj.size)]
+    outArray = [["CLEAR" for _ in range(boardObj.size)] for _ in range(boardObj.size)]
     moveGrid, _ = betterMoveTiles(boardObj, across=False)
     for row in range(boardObj.size):
         for col in range(boardObj.size):
@@ -121,13 +120,26 @@ def crossChecks(boardObj):  # TODO: make it returns a list of sets
 def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, boardObj):  # TODO: Clean up the logic
     """ When given a word, checks that the word can be played given the board and tiles
         WORKING
+        BUG/FEATURE: DOESNT CHECK IF YOU HAVE THE LETTERS TO PLAY THE ANCHOR
+
+    :param startLen: the index of the first non-anchored tile after the anchor
+    :param word: the word you are playing
+    :param anchorRow: anchored Row
+    :param anchorCol: anchored Col
+    :param remainingTiles: the tiles you can play with
+    :param boardObj: the Board() object
+    :return: True if the word can be played, false if not
     """
+    if data.crossed is None:  # For when the function is called on its own
+        data.crossed = crossChecks(boardObj)
     if word not in data.wordset:  # This might not be needed
+        return False
+    if anchorCol + len(word) - startLen >= boardObj.size:  # Check if the word will go over the board
         return False
     i = startLen
     letters = list(remainingTiles)
     while i < len(word):  # Relative position to anchor
-        myRow, myCol = anchorRow, anchorCol + i
+        myRow, myCol = anchorRow, anchorCol + i + 1 - startLen  # Finding i's position on the board
         crossStatus = data.crossed[myRow][myCol]  # Crossed should be in data
         if crossStatus is None:
             if boardObj.squares[myRow, myCol] != word[i]:
@@ -135,14 +147,44 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
         elif crossStatus == "INVALID":
             return False
         else:
-            if crossStatus and word[i] not in crossStatus:
+            if crossStatus != "CLEAR" and word[i] not in crossStatus:
+                return False
+            elif word[i] not in letters:
                 return False
             letters.remove(word[i])
         i += 1
-    rightTile = posMove(anchorRow, anchorCol + i)
+    rightTile = negMove(anchorRow, anchorCol + i, boardObj.size)
     if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     return True
+
+
+def anchorCheck(anchorRow, anchorCol, rack):
+    """ Checks to see if any tiles from rack can be played at the anchor
+
+    :param anchorRow: row of anchor
+    :param anchorCol: col of anchor
+    :param rack: total tiles on rack
+    :return: False, if no anchor can be played, or a set of possible plays
+    """
+    goodLetters = data.crossed[anchorRow][anchorCol]  # Checking the anchor square for down restrictions
+    if goodLetters is None or goodLetters is "INVALID":
+        return False  # The anchor cannot be played, so move to next anchor spot
+    elif goodLetters is "CLEAR":
+        goodAnchors = set(rack)
+    else:
+        goodAnchors = set(rack) & set(goodLetters)  # Rack letters which can be played in the anchor
+        if len(goodAnchors) == 0:  # Can't play at this anchor
+            return False  # Does this work to quit out of the for loop?
+    return goodAnchors
+
+
+def wrapCheckWord(start, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj):
+    endings = data.completor.keys(start)
+    for word in endings:
+        if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
+            # possibleMoves.append((word, (anchorRow, anchorCol - len(start) + 2)))
+            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 2), boardObj))
 
 
 def botPlay(rack, boardObj):  # TODO: split this into more functions
@@ -156,42 +198,32 @@ def botPlay(rack, boardObj):  # TODO: split this into more functions
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
     possibleMoves = []  # A list of Move() objects
     for anchorRow, anchorCol in anchorList:
-        goodLetters = data.crossed[anchorRow][anchorCol]  # Checking the anchor square for down restrictions
-        if goodLetters is not None:
-            goodAnchors = set(rack) & set(goodLetters)  # Rack letters which can be played in the anchor
-            if goodAnchors == {}:  # Can't play at this anchor
-                continue  # Does this work to quit out of the for loop?
-        else:
-            goodAnchors = set(rack)
+        goodAnchors = anchorCheck(anchorRow, anchorCol, rack)
+        if not goodAnchors:
+            continue  # No anchors to play, so move to next possible anchor
         before, after = completeWord(boardObj, (anchorRow, anchorCol))
-        leftParts = []
-        if before == '':
-            left = posMove(anchorRow, anchorCol)
-            counter = 0  # Counter is the number of free spaces you have to the left.
-            while left and not anchorGrid[left]:
-                left = posMove(left[0], left[1])
-                counter += 1
         for anchorLetter in goodAnchors:  # going through each possible anchor
             tilesLeft = list(rack)
             tilesLeft.remove(anchorLetter)  # Remaining tiles on your rack
-            if before == '':  # TODO: The logic here could be cleaned up a bit (double before)
+            if before == '':
+                left = posMove(anchorRow, anchorCol)
+                counter = 0  # Counter is the number of free spaces you have to the left.
+                while left and not anchorGrid[left]:
+                    left = posMove(left[0], left[1])
+                    counter += 1
                 # This step could really blow up (around 2000 results), problematic IF COUNTER <1 ??
+                # The list thing also might blow up
                 tempLeftParts = chain.from_iterable([permutations(tilesLeft, i) for i in range(0, counter + 1)])
                 # TODO: Clean up leftParts
-                leftParts = [''.join((*part, anchorLetter, after)) for part in tempLeftParts]
+                leftParts = [(part, ''.join((*part, anchorLetter, after))) for part in tempLeftParts]
                 # what about having no left part???, is zero working?
+                for initial, start in leftParts:
+                    theseTilesLeft = list(tilesLeft)
+                    for char in initial:
+                        theseTilesLeft.remove(char)
+                    wrapCheckWord(start, anchorRow, anchorCol, theseTilesLeft, possibleMoves, boardObj)
             else:
                 leftParts = [''.join((before, anchorLetter, after))]
-            for start in leftParts:
-                theseTilesLeft = list(tilesLeft)
-                for char in start:
-                    theseTilesLeft.remove(char)  # Now we know which tiles we have left to play.
-                numUsedTiles = len(start)
-                endings = data.completor(start)
-                # Going to try all possible endings, rather than try all fittings
-                # THIS IS A FORK IN THE ROAD FOR THE ALGO
-                for word in endings:
-                    if checkWordMatches(numUsedTiles, word, anchorRow, anchorCol, theseTilesLeft, boardObj):
-                        # TODO: Check that start coordinates are good
-                        possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
+                for start in leftParts:
+                    wrapCheckWord(start, anchorRow, anchorCol, tilesLeft, possibleMoves, boardObj)
     return possibleMoves

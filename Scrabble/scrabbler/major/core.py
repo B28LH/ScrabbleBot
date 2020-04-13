@@ -1,15 +1,14 @@
-"""Defines the Board() class and the essential Board operations
+"""Defines the Board() and Move() class and the essential Board operations
 """
 
 import pickle
 import numpy as np
+from copy import deepcopy
 from scrabbler.major import data
-import sys
-
 
 
 class Board:
-    def __init__(self, title, design=data.official):
+    def __init__(self, design=data.official, title=None):
         r, c = design.shape
         self.design = design
         self.fullDesign = np.pad(design, ((0, r - 1), (0, c - 1)), 'reflect')
@@ -39,7 +38,7 @@ class Board:
     def __getitem__(self, index):
         return self.squares[index]
 
-    def __delitem__(self, index):
+    def __delitem__(self, index):  # This resets the whole row to the design
         self.squares[index] = self.fullDesign[index]
 
     @property
@@ -47,26 +46,31 @@ class Board:
         return np.isin(self.squares, data.alphabet).astype(int)
 
     def layer(self, coords, word, across=True):
+        """ Provides a visual representation of layer, to be approved by user """
+        tempBoard = deepcopy(self)
+        tempBoard.realLayer(coords, word, across=across)
+        print(f"----New changes:-----\n {tempBoard}")
+        answer = input("Apply changes? ")
+        if answer != '' and answer.lower[0] == 'y':
+            self.realLayer(coords, word, across=across)
+
+    def realLayer(self, coords, word, across=True):
         row, col = coords
         wordLen = len(word)
         if across:
             assert col + wordLen <= self.size, "Too large"
             self.squares[row, col:col + wordLen] = list(word)
-            self.alpha[row, col:col + wordLen] = [int(x.isalpha()) for x in word]
         else:  # down
             assert row + wordLen <= self.size, "Too large"
             self.squares[row:row + wordLen, col] = list(word)
-            self.alpha[row:row + wordLen, col] = [int(x.isalpha()) for x in word]
 
-    # TODO: create a 'cancel' function which deletes last word
-
-    def save(self, Name=None, Display=False):  # save objects or arrays?
-        if Name is None:
-            Name = self.title
-        with open(data.path + f"scrabbleGames/{Name}.pkl",
-                  'wb') as f1:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
+    def save(self, saveName=None, Display=False):  # save objects or arrays?
+        if saveName is None:
+            assert self.title is not None, "saveName required"
+            saveName = self.title
+        with open(data.path + f"scrabbleGames/{saveName}.pkl", 'wb') as f1:
             pickle.dump(self.squares, f1, pickle.HIGHEST_PROTOCOL)
-        print(f"Game saved as {Name}\n")
+        print(f"Game saved as {saveName}\n")
         if Display:
             print(self)
 
@@ -96,6 +100,7 @@ class Move:
 
 
 def load(name, display=False):  # TODO: Fix loading to support objects?
+    # TODO: Rewrite load function
     """ Loads a board from file into a BoardObj
     Watch out for loading a deprecated Board object (or just an array)
     
@@ -105,7 +110,7 @@ def load(name, display=False):  # TODO: Fix loading to support objects?
     """
     with open(data.path + f"scrabbleGames/{name}.pkl", 'rb') as f:  # THESE ONLY WORK WHEN EXECUTED FROM __main__.py
         LoadBoard = pickle.load(f)
-    loader = Board(name)  # nb set the correct base design
+    loader = Board(title=name)  # nb set the correct base design
     if type(LoadBoard) == np.ndarray:
         inData = LoadBoard
     else:
