@@ -427,16 +427,16 @@ def Meaning(word):
     print('{}: {}'.format(word, collinsdict[word.lower()]))
 
 
-def Meaning2(word):  # deprecated
-    Meaning = EngDict.meaning(word.lower())
-    if Meaning == None:
-        print("'%s' is not a word in the dictionary" % word)
-        return
-    print("'%s' means:" % word)
-    for key in Meaning:
-        print(key + '')
-        for num, definition in enumerate(Meaning[key]):
-            print('\t%i %s' % (num + 1, definition))
+# def Meaning2(word):  # deprecated
+#     Meaning = EngDict.meaning(word.lower())
+#     if Meaning == None:
+#         print("'%s' is not a word in the dictionary" % word)
+#         return
+#     print("'%s' means:" % word)
+#     for key in Meaning:
+#         print(key + '')
+#         for num, definition in enumerate(Meaning[key]):
+#             print('\t%i %s' % (num + 1, definition))
 
 
 def play(MyLetters, GameBoard=GameBoard, Difficulty=3):
@@ -530,17 +530,19 @@ cProfile.run('play("asdflet",GameBoard)', sort=1)
 ###---------Area to play in------------####
 
 
-# Wipe GameBoard
-GameBoard = np.copy(StartBoard)
-
-# Show the game
-DisplayBoard(GameBoard)
-
-# Save the game, name defaults to GameName
-SaveGame(GameBoard)
+# # Wipe GameBoard
+# GameBoard = np.copy(StartBoard)
+#
+# # Show the game
+# DisplayBoard(GameBoard)
+#
+# # Save the game, name defaults to GameName
+# SaveGame(GameBoard)
 
 # Load a previous game. Second variable is the name of the file (optional)
-#GameBoard = LoadGame(GameBoard)
+GameBoard = LoadGame("ThreeWords")
+output = [(x[2], x[1]) for x in BestMove("me", GameBoard) if x[0] == 2]
+print(output)
 
 # Check if a word is valid
 #isWord('oiler')

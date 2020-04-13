@@ -59,7 +59,6 @@ def betterMoveTiles(boardObj, across=True, both=False):
 
 def completeWord(boardObj, coord, across=True):
     """ Finds longest line of letters from a spawn tile
-
     :param boardObj: a Board() Object
     :param coord: (row,col) of the spawn tile
     :param across: complete the word across (instead of down)
@@ -86,7 +85,7 @@ def completeWord(boardObj, coord, across=True):
     return posPart[::-1], negPart
 
 
-def crossChecks(boardObj):  # TODO: make it returns a list of sets
+def crossChecks(boardObj):
     """ Produces an array of the valid one-tile down moves for each square
 
     :param boardObj:
@@ -179,12 +178,16 @@ def anchorCheck(anchorRow, anchorCol, rack):
     return goodAnchors
 
 
-def wrapCheckWord(start, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj):
+def wrapCheckWord(start, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, altLeft=None):
     endings = data.completor.keys(start)
     for word in endings:
         if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
             # possibleMoves.append((word, (anchorRow, anchorCol - len(start) + 2)))
-            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 2), boardObj))
+            if altLeft is not None:
+                possibleMoves.append(core.Move(word, (anchorRow, anchorCol - altLeft), boardObj))
+            else:
+                possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
+
 
 
 def botPlay(rack, boardObj):  # TODO: split this into more functions
@@ -201,7 +204,7 @@ def botPlay(rack, boardObj):  # TODO: split this into more functions
         goodAnchors = anchorCheck(anchorRow, anchorCol, rack)
         if not goodAnchors:
             continue  # No anchors to play, so move to next possible anchor
-        before, after = completeWord(boardObj, (anchorRow, anchorCol))
+        before, after = completeWord(boardObj, (anchorRow, anchorCol), across=True)
         for anchorLetter in goodAnchors:  # going through each possible anchor
             tilesLeft = list(rack)
             tilesLeft.remove(anchorLetter)  # Remaining tiles on your rack
@@ -216,12 +219,12 @@ def botPlay(rack, boardObj):  # TODO: split this into more functions
                 tempLeftParts = chain.from_iterable([permutations(tilesLeft, i) for i in range(0, counter + 1)])
                 # TODO: Clean up leftParts
                 leftParts = [(part, ''.join((*part, anchorLetter, after))) for part in tempLeftParts]
-                # what about having no left part???, is zero working?
                 for initial, start in leftParts:
                     theseTilesLeft = list(tilesLeft)
                     for char in initial:
                         theseTilesLeft.remove(char)
-                    wrapCheckWord(start, anchorRow, anchorCol, theseTilesLeft, possibleMoves, boardObj)
+                    wrapCheckWord(start, anchorRow, anchorCol, theseTilesLeft,
+                                  possibleMoves, boardObj, altLeft=len(initial))
             else:
                 leftParts = [''.join((before, anchorLetter, after))]
                 for start in leftParts:

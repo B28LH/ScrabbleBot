@@ -4,7 +4,7 @@
 import pickle
 import numpy as np
 from copy import deepcopy
-from scrabbler.major import data
+from scrabbler.major import data, algo
 
 
 class Board:
@@ -75,35 +75,11 @@ class Board:
             print(self)
 
 
-class Move:
-    # Every Move is an across move
-    def __init__(self, word, startCoords, boardObj, score=None):
-        self.word = word
-        self.row, self.col = startCoords
-        self.length = len(word)
-        self.score = self.score()
-        self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
-
-    def score(self):
-        pass  # TODO: implement scoring
-
-    def __str__(self):
-        if self.score is None:
-            return f"{self.word} @ ({self.row},{self.col})"
-        return f"{self.word} @ ({self.row},{self.col}) for {self.score} points"
-
-    def __repr__(self):  # When is this called?
-        return str(self)
-
-    def __lt__(self, other):
-        return self.score < other.score
-
-
 def load(name, display=False):  # TODO: Fix loading to support objects?
     # TODO: Rewrite load function
     """ Loads a board from file into a BoardObj
     Watch out for loading a deprecated Board object (or just an array)
-    
+
     :param name: The filename of the board you want to load
     :param display: whether the loaded board is printed
     :return: BoardObj: the loaded board
@@ -119,3 +95,57 @@ def load(name, display=False):  # TODO: Fix loading to support objects?
     if display:
         print(f"\nGame '{name}' loaded \n\n{loader}")
     return loader
+
+
+def convert(word, behind):
+    output = 0
+    multiplier = 1
+    if data.startTile:
+        accept = ['!', '?']
+    else:
+        accept = ['!']
+    for i, char in enumerate(word):
+        if behind[i] == '*':
+            output += 2 * data.tileValues[char]
+        elif behind[i] == '^':
+            output += 3 * data.tileValues[char]
+        elif behind[i] in accept:
+            multiplier *= 2
+            output += data.tileValues[char]
+        elif behind[i] == '#':
+            multiplier *= 3
+            output += data.tileValues[char]
+        else:
+            output += data.tileValues[char]
+    return output * multiplier
+
+
+class Move:
+    # Every Move is an across move
+    def __init__(self, word, startCoords, boardObj, score=None):
+        self.word = word
+        self.row, self.col = startCoords
+        self.length = len(word)
+        self.board = boardObj
+        self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
+        if score is None:
+            self.score = convert(word, self.xray)
+            storedAlpha = boardObj.alpha
+            for i, char in enumerate(word):
+                if not storedAlpha[self.row][self.col + i]:
+                    before, after = algo.completeWord(boardObj, (self.row, self.col + i), across=False)
+                    if not (before is '' and after is ''):
+                        backing = [None] * (len(before) + len(after) + 1)
+                        backing[len(before)] = self.xray[i]
+                        self.score += convert(''.join((before, char, after)), backing)
+
+    def __str__(self):
+        if self.score is None:
+            return f"{self.word} @ ({self.row},{self.col})"
+        return f"{self.word} @ ({self.row},{self.col}) for {self.score} points"
+
+    def __repr__(self):  # When is this called?
+        return str(self)
+
+    def __lt__(self, other):
+        return self.score < other.score
