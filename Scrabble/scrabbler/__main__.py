@@ -1,10 +1,6 @@
 from scrabbler.major import core, data, algo
-import cProfile
-# Should this all belong in the __init__.py ???
+from tests import test_all
 
-WWF = False
-small = False
-title = 'Test5'
 
 """
 TO EXECUTE THE MAIN FILE:
@@ -12,8 +8,6 @@ TO EXECUTE THE MAIN FILE:
 >>> runpy.run_module(mod_name='scrabbler')
 """
 
-import cProfile
+gb = data.gameBoard = core.load("ThreeWords")
 
-gb2 = data.gameBoard = core.load('Oscar2')
-
-cProfile.run("algo.botPlay('asdflet', gb2)", sort=1)
+results = algo.botPlay('success', gb)

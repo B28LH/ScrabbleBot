@@ -1,4 +1,5 @@
 import pytest
+import cProfile
 from scrabbler.major import core, data, algo
 from scrabbler.oldCodes import scrabblerOLDWRAPPED
 
@@ -51,3 +52,9 @@ def test_botPlay(my_letters, my_board):
     print(f"missedSolns: {missedSolns}\n newSolns: {newSolns}")
     assert missedSolns == []
     assert newSolns == []
+
+
+def benchmark():
+    gb2 = data.gameBoard = core.load('Oscar2')
+    print(gb2)
+    cProfile.run("algo.botPlay('asdflet', gb2)", sort=1)
