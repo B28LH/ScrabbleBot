@@ -1,5 +1,4 @@
 from scrabbler.major import core, data, algo
-from scrabbler.alphabets import dawgfiler
 import pickle
 import dawg
 import sys

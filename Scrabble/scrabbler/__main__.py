@@ -1,5 +1,5 @@
 from scrabbler.major import core, data, algo
-
+import cProfile
 # Should this all belong in the __init__.py ???
 
 WWF = False
@@ -12,5 +12,8 @@ TO EXECUTE THE MAIN FILE:
 >>> runpy.run_module(mod_name='scrabbler')
 """
 
-gb = data.gameBoard = core.load('ThreeWords')
-results = algo.botPlay('trial', gb)
+import cProfile
+
+gb2 = data.gameBoard = core.load('Oscar2')
+
+cProfile.run("algo.botPlay('asdflet', gb2)", sort=1)

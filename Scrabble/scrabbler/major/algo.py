@@ -156,7 +156,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
                 return False
             letters.remove(word[i])
         i += 1
-    rightTile = negMove(anchorRow, anchorCol + i, boardObj.size)
+    rightTile = negMove(anchorRow, anchorCol - startLen + len(word), boardObj.size)
     if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     return True

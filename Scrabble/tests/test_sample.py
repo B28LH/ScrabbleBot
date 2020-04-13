@@ -20,12 +20,13 @@ def my_letters():
 
 def test_crossCheck(my_board):
     assert algo.crossChecks(my_board)[5][5] is "INVALID"
-    assert algo.crossChecks(my_board)[9][6] is False
+    assert algo.crossChecks(my_board)[9][6] is "CLEAR"
     assert algo.crossChecks(my_board)[9][5] is None
-    assert type(algo.crossChecks(my_board)[11][5]) == type(set())
+    assert isinstance(algo.crossChecks(my_board)[11][5]), type(set())
 
 
 def test_checkWordMatches(my_board):
+    assert algo.checkWordMatches(3, 'amia', 9, 4, 'amia', my_board)
     assert algo.checkWordMatches(2, 'tear', 12, 10, 'tear', my_board)
     assert algo.checkWordMatches(2, 'omen', 8, 10, 'omen', my_board)
     # TODO: BUG TO FIX: (erm)

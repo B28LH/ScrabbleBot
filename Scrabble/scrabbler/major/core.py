@@ -17,13 +17,13 @@ class Board:
         self.title = title
 
     def __str__(self):
-        Indices = list(map(str, range(self.size)))
+        indices = list(map(str, range(self.size)))
         output = ''
         if self.size < 10:
-            output += '    ' + '|'.join(Indices)
+            output += '    ' + '|'.join(indices)
         else:
-            output += '    ' + '|'.join([x[0] if int(x) > 9 else ' ' for x in Indices]) + '\n'
-            output += '    ' + '|'.join([x[1] if int(x) > 9 else x for x in Indices]) + '\n'
+            output += '    ' + '|'.join([x[0] if int(x) > 9 else ' ' for x in indices]) + '\n'
+            output += '    ' + '|'.join([x[1] if int(x) > 9 else x for x in indices]) + '\n'
         for i, x in enumerate(self.squares):
             if i < 10: i = str(i) + ' '
             output += str(i) + ' |' + ' '.join(x) + '\n'
@@ -140,7 +140,7 @@ def scorer(moveObj):
             initialBacking[i] = None
     moveObj.score += convert(moveObj.word, initialBacking)
     if playedTiles == 7:
-        moveObj.core += data.maxTile
+        moveObj.score += data.maxTile
 
 
 class Move:
