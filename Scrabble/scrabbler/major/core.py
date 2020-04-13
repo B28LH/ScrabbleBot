@@ -120,24 +120,41 @@ def convert(word, behind):
     return output * multiplier
 
 
+def scorer(moveObj):
+    """ scores a move
+    :param moveObj: the move to be scored
+    """
+    moveObj.score = 0
+    playedTiles = 0
+    storedAlpha = moveObj.board.alpha
+    initialBacking = moveObj.xray
+    for i, char in enumerate(moveObj.word):
+        if not storedAlpha[moveObj.row][moveObj.col + i]:
+            playedTiles += 1
+            before, after = algo.completeWord(moveObj.board, (moveObj.row, moveObj.col + i), across=False)
+            if not (before is '' and after is ''):
+                backing = [None] * (len(before) + len(after) + 1)
+                backing[len(before)] = moveObj.xray[i]
+                moveObj.score += convert(''.join((before, char, after)), backing)
+        else:
+            initialBacking[i] = None
+    moveObj.score += convert(moveObj.word, initialBacking)
+    if playedTiles == 7:
+        moveObj.core += data.maxTile
+
+
 class Move:
     # Every Move is an across move
-    def __init__(self, word, startCoords, boardObj, score=None):
+    def __init__(self, word, coords, boardObj, score=None):
         self.word = word
-        self.row, self.col = startCoords
+        self.row, self.col = coords
         self.length = len(word)
         self.board = boardObj
         self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
         if score is None:
-            self.score = convert(word, self.xray)
-            storedAlpha = boardObj.alpha
-            for i, char in enumerate(word):
-                if not storedAlpha[self.row][self.col + i]:
-                    before, after = algo.completeWord(boardObj, (self.row, self.col + i), across=False)
-                    if not (before is '' and after is ''):
-                        backing = [None] * (len(before) + len(after) + 1)
-                        backing[len(before)] = self.xray[i]
-                        self.score += convert(''.join((before, char, after)), backing)
+            scorer(self)
+        else:
+            self.score = score
 
     def __str__(self):
         if self.score is None:
@@ -149,3 +166,7 @@ class Move:
 
     def __lt__(self, other):
         return self.score < other.score
+
+    def __eq__(self, other):
+        # Do I need to compare scores?
+        return self.score == other.score and self.row == other.row and self.col == other.col

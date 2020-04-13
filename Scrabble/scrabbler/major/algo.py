@@ -133,12 +133,16 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
         data.crossed = crossChecks(boardObj)
     if word not in data.wordset:  # This might not be needed
         return False
-    if anchorCol + len(word) - startLen >= boardObj.size:  # Check if the word will go over the board
+    elif anchorCol + len(word) - startLen >= boardObj.size:  # Check if the word will go over the board
         return False
+    elif startLen == len(word):  # Letting two letter words be played
+        return True
+    elif data.crossed is None:  # For when the function is called on its own
+        data.crossed = crossChecks(boardObj)
     i = startLen
     letters = list(remainingTiles)
     while i < len(word):  # Relative position to anchor
-        myRow, myCol = anchorRow, anchorCol + i + 1 - startLen  # Finding i's position on the board
+        myRow, myCol = anchorRow, anchorCol + 1 - startLen + i  # Finding i's position on the board
         crossStatus = data.crossed[myRow][myCol]  # Crossed should be in data
         if crossStatus is None:
             if boardObj.squares[myRow, myCol] != word[i]:
@@ -156,6 +160,14 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     return True
+
+
+def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj):
+    """ extraStart includes placed tiles to the right of the anchor, start does not"""
+    endings = data.completor.keys(extraStart)
+    for word in endings:
+        if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
+            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
 
 
 def anchorCheck(anchorRow, anchorCol, rack):
@@ -176,18 +188,6 @@ def anchorCheck(anchorRow, anchorCol, rack):
         if len(goodAnchors) == 0:  # Can't play at this anchor
             return False  # Does this work to quit out of the for loop?
     return goodAnchors
-
-
-def wrapCheckWord(start, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, altLeft=None):
-    endings = data.completor.keys(start)
-    for word in endings:
-        if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
-            # possibleMoves.append((word, (anchorRow, anchorCol - len(start) + 2)))
-            if altLeft is not None:
-                possibleMoves.append(core.Move(word, (anchorRow, anchorCol - altLeft), boardObj))
-            else:
-                possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
-
 
 
 def botPlay(rack, boardObj):  # TODO: split this into more functions
@@ -219,14 +219,14 @@ def botPlay(rack, boardObj):  # TODO: split this into more functions
                 tempLeftParts = chain.from_iterable([permutations(tilesLeft, i) for i in range(0, counter + 1)])
                 # TODO: Clean up leftParts
                 leftParts = [(part, ''.join((*part, anchorLetter, after))) for part in tempLeftParts]
-                for initial, start in leftParts:
+                for initial, extraStart in leftParts:
                     theseTilesLeft = list(tilesLeft)
                     for char in initial:
                         theseTilesLeft.remove(char)
-                    wrapCheckWord(start, anchorRow, anchorCol, theseTilesLeft,
-                                  possibleMoves, boardObj, altLeft=len(initial))
+                    start = ''.join((*initial, anchorLetter))
+                    wrapCheckWord(start, extraStart, anchorRow, anchorCol, theseTilesLeft, possibleMoves, boardObj)
             else:
-                leftParts = [''.join((before, anchorLetter, after))]
-                for start in leftParts:
-                    wrapCheckWord(start, anchorRow, anchorCol, tilesLeft, possibleMoves, boardObj)
-    return possibleMoves
+                start = ''.join((before, anchorLetter))
+                extraStart = ''.join((before, anchorLetter, after))
+                wrapCheckWord(start, extraStart, anchorRow, anchorCol, tilesLeft, possibleMoves, boardObj)
+    return sorted(possibleMoves)
