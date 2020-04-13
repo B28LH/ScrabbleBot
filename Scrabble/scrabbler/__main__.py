@@ -10,4 +10,6 @@ TO EXECUTE THE MAIN FILE:
 
 gb = data.gameBoard = core.load("ThreeWords")
 
-results = algo.botPlay('success', gb)
+results = algo.botPlay('test', gb)
+print(results)
+# test_all.benchmark()

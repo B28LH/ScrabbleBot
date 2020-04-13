@@ -4,6 +4,7 @@
 import numpy as np
 from itertools import permutations, chain
 from scrabbler.major import data, core
+from copy import deepcopy
 from scipy import ndimage
 
 
@@ -162,12 +163,12 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     return True
 
 
-def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj):
+def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, across=True):
     """ extraStart includes placed tiles to the right of the anchor, start does not"""
     endings = data.completor.keys(extraStart)
     for word in endings:
         if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
-            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj))
+            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj, across=across))
 
 
 def anchorCheck(anchorRow, anchorCol, rack):
@@ -190,11 +191,12 @@ def anchorCheck(anchorRow, anchorCol, rack):
     return goodAnchors
 
 
-def botPlay(rack, boardObj):  # TODO: split this into more functions
+def botPlayBoth(rack, boardObj, across=True):  # TODO: split this into more functions
     """ Plays the best move possible from a given rack
 
     :param rack: a string of the letters from the rack
     :param boardObj: a Board() object
+    :param across: whether the bot is playing across moves
     :return: TBD: MoveObj?
     """
     data.crossed = crossChecks(boardObj)
@@ -224,9 +226,19 @@ def botPlay(rack, boardObj):  # TODO: split this into more functions
                     for char in initial:
                         theseTilesLeft.remove(char)
                     start = ''.join((*initial, anchorLetter))
-                    wrapCheckWord(start, extraStart, anchorRow, anchorCol, theseTilesLeft, possibleMoves, boardObj)
+                    wrapCheckWord(start, extraStart, anchorRow, anchorCol,
+                                  theseTilesLeft, possibleMoves, boardObj, across=across)
             else:
                 start = ''.join((before, anchorLetter))
                 extraStart = ''.join((before, anchorLetter, after))
-                wrapCheckWord(start, extraStart, anchorRow, anchorCol, tilesLeft, possibleMoves, boardObj)
-    return sorted(possibleMoves)
+                wrapCheckWord(start, extraStart, anchorRow, anchorCol,
+                              tilesLeft, possibleMoves, boardObj, across=across)
+    return possibleMoves
+
+
+def botPlay(rack, boardObj):
+    acrossPlays = botPlayBoth(rack, boardObj, across=True)
+    flippedBoard = deepcopy(boardObj)
+    flippedBoard.squares = flippedBoard.squares.T
+    downPlays = botPlayBoth(rack, flippedBoard, across=False)
+    return sorted(chain(acrossPlays, downPlays))

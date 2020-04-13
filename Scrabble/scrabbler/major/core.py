@@ -145,18 +145,19 @@ def scorer(moveObj):
 
 class Move:
     # Every Move is an across move
-    def __init__(self, word, coords, boardObj, score=None):
+    def __init__(self, word, coords, boardObj, across=True, score=None):
         self.word = word
         self.row, self.col = coords
         self.length = len(word)
         self.board = boardObj
+        self.across = across
         self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
         if score is None:
             scorer(self)
         else:
             self.score = score
 
-    def __str__(self):
+    def __str__(self):  # TODO: create the printing for down plays
         if self.score is None:
             return f"{self.word} @ ({self.row},{self.col})"
         return f"{self.word} @ ({self.row},{self.col}) for {self.score} points"

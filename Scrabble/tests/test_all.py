@@ -57,4 +57,4 @@ def test_botPlay(my_letters, my_board):
 def benchmark():
     gb2 = data.gameBoard = core.load('Oscar2')
     print(gb2)
-    cProfile.run("algo.botPlay('asdflet', gb2)", sort=1)
+    cProfile.run("algo.botPlay('asdflet', gb2)", locals(), sort=1)
