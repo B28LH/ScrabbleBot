@@ -157,13 +157,17 @@ class Move:
         else:
             self.score = score
 
-    def __str__(self):  # TODO: create the printing for down plays
-        if self.score is None:
-            return f"{self.word} @ ({self.row},{self.col})"
-        return f"{self.word} @ ({self.row},{self.col}) for {self.score} points"
+    def __str__(self):
+        if self.across:
+            return f"Across: {self.word} @ ({self.row},{self.col}) for {self.score} points"
+        else:
+            return f"Down: {self.word} @ ({self.col},{self.row}) for {self.score} points"
 
     def __repr__(self):  # When is this called?
-        return str(self)
+        if self.across:
+            return f"→ {self.word} ({self.row},{self.col}) {self.score}p"
+        else:
+            return f"↓ {self.word} ({self.col},{self.row}) {self.score}p"
 
     def __lt__(self, other):
         return self.score < other.score
