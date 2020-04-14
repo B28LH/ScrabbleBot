@@ -1,6 +1,9 @@
-import pytest
 import cProfile
-from scrabbler.major import core, data, algo
+
+import numpy as np
+import pytest
+
+from scrabbler.major import core, data, algo, player
 from scrabbler.oldCodes import scrabblerOLDWRAPPED
 
 
@@ -60,3 +63,9 @@ def test_allMoves(my_letters, my_board):
 def benchmark():
     gb2 = data.gameBoard = core.load('Oscar2')
     cProfile.runctx("algo.allMoves('asdflet', gb2)", globals(), locals(), sort=1)
+
+
+def randomPlay():
+    gb3 = data.gameBoard = core.Board()
+    randomLet = ''.join(np.random.choice(np.array(data.loweralpha), size=7, replace=False))
+    player.playMove(randomLet, gb3)
