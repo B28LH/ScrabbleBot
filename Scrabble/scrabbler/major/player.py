@@ -17,7 +17,7 @@ def playMove(rack, boardObj):
         myMove = theMoves[-1]  # TODO: Implement difficulty levels
         print(f"\nI play {myMove}:")
         boardObj.layerMoveObj(myMove)
-        print(meaning(myMove.word))
+        print(f"{myMove.word}: {meaning(myMove.word)}")
     else:
         print("I cannot play a move :(")
 

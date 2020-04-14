@@ -20,7 +20,6 @@ setup(
     license='MIT',
 
     author="Ben Lloyd-Hurwitz",
-    author_email="benlloydhurwitz@gmail.com",
 
     description="A scrabble playing bot",
     long_description=read("README.rst"),
