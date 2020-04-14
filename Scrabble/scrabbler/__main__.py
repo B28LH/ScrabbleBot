@@ -7,6 +7,7 @@ from tests import test_all
 # Blanks
 # Speed analysis
 # [''.join(s) for s in substrings('more')]
+# Add to gitHub :)
 
 
 """
