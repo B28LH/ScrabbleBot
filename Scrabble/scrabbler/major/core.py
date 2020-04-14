@@ -49,12 +49,13 @@ class Board:
         """ Provides a visual representation of layer, to be approved by user """
         tempBoard = deepcopy(self)
         tempBoard.realLayer(coords, word, across=across)
-        print(f"----New changes:-----\n {tempBoard}")
+        print(f"----New changes:------\n {tempBoard}")
         answer = input("Apply changes? ")
-        if answer != '' and answer.lower[0] == 'y':
-            self.realLayer(coords, word, across=across)
+        if answer != '' and answer.lower()[0] == 'y':
+            self.realLayer(coords, word, across=across, display=False)
 
-    def realLayer(self, coords, word, across=True):
+    def realLayer(self, coords, word, across=True, display=False):
+        """ No return layer of move"""
         row, col = coords
         wordLen = len(word)
         if across:
@@ -63,6 +64,11 @@ class Board:
         else:  # down
             assert row + wordLen <= self.size, "Too large"
             self.squares[row:row + wordLen, col] = list(word)
+        if display:
+            print(self)
+
+    def layerMoveObj(self, moveObj, display=True):
+        self.realLayer(moveObj.coords, moveObj.word, across=moveObj.across, display=display)
 
     def save(self, saveName=None, Display=False):  # save objects or arrays?
         if saveName is None:
@@ -105,6 +111,7 @@ def convert(word, behind):
     else:
         accept = ['!']
     for i, char in enumerate(word):
+        char = char.lower()  # TODO: Fix this bug
         if behind[i] == '*':
             output += 2 * data.tileValues[char]
         elif behind[i] == '^':
@@ -124,44 +131,48 @@ def scorer(moveObj):
     """ scores a move
     :param moveObj: the move to be scored
     """
-    moveObj.score = 0
+    score = 0
     playedTiles = 0
-    storedAlpha = moveObj.board.alpha
-    initialBacking = moveObj.xray
+    initialBacking = np.array(moveObj.xray)
     for i, char in enumerate(moveObj.word):
-        if not storedAlpha[moveObj.row][moveObj.col + i]:
+        if not moveObj.board.alpha[moveObj.fakeRow][moveObj.fakeCol + i]:
             playedTiles += 1
-            before, after = algo.completeWord(moveObj.board, (moveObj.row, moveObj.col + i), across=False)
+            before, after = algo.completeWord(moveObj.board, (moveObj.fakeRow, moveObj.fakeCol + i), across=False)
             if not (before is '' and after is ''):
                 backing = [None] * (len(before) + len(after) + 1)
                 backing[len(before)] = moveObj.xray[i]
-                moveObj.score += convert(''.join((before, char, after)), backing)
+                score += convert(''.join((before, char, after)), backing)
         else:
             initialBacking[i] = None
-    moveObj.score += convert(moveObj.word, initialBacking)
-    if playedTiles == 7:
-        moveObj.score += data.maxTile
+    score += convert(moveObj.word, initialBacking)
+    if playedTiles == data.maxTile:
+        score += data.allTileBonus
+    return score
 
 
 class Move:
-    # Every Move is an across move
-    def __init__(self, word, coords, boardObj, across=True, score=None):
+    def __init__(self, word, coords, boardObj, across, score=None):
         self.word = word
-        self.row, self.col = coords
+        self.row, self.col = self.coords = coords
         self.length = len(word)
-        self.board = boardObj
         self.across = across
-        self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
+        self.board = boardObj
+        if across:
+            self.xray = boardObj.fullDesign[self.row, self.col:self.col + self.length]
+            self.fakeRow, self.fakeCol = coords
+        else:
+            self.xray = boardObj.fullDesign[self.row:self.row + self.length, self.col]
+            self.fakeCol, self.fakeRow = coords
         if score is None:
-            scorer(self)
+            self.score = scorer(self)
         else:
             self.score = score
 
     def __str__(self):
         if self.across:
-            return f"Across: {self.word} @ ({self.row},{self.col}) for {self.score} points"
+            return f"across: {self.word} @ {self.coords} for {self.score} points"
         else:
-            return f"Down: {self.word} @ ({self.col},{self.row}) for {self.score} points"
+            return f"down: {self.word} @ {self.coords} for {self.score} points"
 
     def __repr__(self):  # When is this called?
         if self.across:

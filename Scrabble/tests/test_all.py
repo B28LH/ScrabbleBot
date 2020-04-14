@@ -11,7 +11,8 @@ def translatePlay(tiles, boardObj):
 
 @pytest.fixture
 def my_board():
-    return core.load('ThreeWords')
+    data.gameBoard = core.load('ThreeWords')
+    return data.gameBoard
 
 
 @pytest.fixture
@@ -23,28 +24,30 @@ def test_crossCheck(my_board):
     assert algo.crossChecks(my_board)[5][5] is "INVALID"
     assert algo.crossChecks(my_board)[9][6] is "CLEAR"
     assert algo.crossChecks(my_board)[9][5] is None
-    assert isinstance(algo.crossChecks(my_board)[11][5]), type(set())
+    assert isinstance(algo.crossChecks(my_board)[11][5], type(set()))
 
 
 def test_checkWordMatches(my_board):
     assert algo.checkWordMatches(3, 'amia', 9, 4, 'amia', my_board)
     assert algo.checkWordMatches(2, 'tear', 12, 10, 'tear', my_board)
     assert algo.checkWordMatches(2, 'omen', 8, 10, 'omen', my_board)
-    # TODO: BUG TO FIX: (erm)
     # assert algo.checkWordMatches(2, 'erm', 10, 4, 'erm', my_board)
     # Insufficient tiles in rack:
     assert not algo.checkWordMatches(2, 'omen', 8, 10, 'not', my_board)
     # Right collision at end of word
     assert not algo.checkWordMatches(2, 'aims', 9, 6, 'aims', my_board)
+    # left collision not registering properly: (lose as 'ose' w/o l)
+
 
 
 def test_scoring(my_board):
     assert core.Move('otter', (12, 8), my_board, score=None).score == 12
     assert core.Move('mem', (9, 9), my_board, score=None).score == 7
+    print(data.gameBoard)
 
 
-def test_botPlay(my_letters, my_board):
-    newAnswer = algo.botPlay(my_letters, my_board)
+def test_allMoves(my_letters, my_board):
+    newAnswer = algo.allMoves(my_letters, my_board)
     oldAnswer = translatePlay(my_letters, my_board)
     missedSolns = [x for x in oldAnswer if x not in newAnswer]
     newSolns = [x for x in newAnswer if x not in oldAnswer]
@@ -56,5 +59,4 @@ def test_botPlay(my_letters, my_board):
 
 def benchmark():
     gb2 = data.gameBoard = core.load('Oscar2')
-    print(gb2)
-    cProfile.run("algo.botPlay('asdflet', gb2)", locals(), sort=1)
+    cProfile.runctx("algo.allMoves('asdflet', gb2)", globals(), locals(), sort=1)

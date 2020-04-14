@@ -1,4 +1,4 @@
-from scrabbler.major import core, data, algo
+from scrabbler.major import core, data, algo, player
 import pickle
 import dawg
 import sys

@@ -168,7 +168,11 @@ def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possib
     endings = data.completor.keys(extraStart)
     for word in endings:
         if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
-            possibleMoves.append(core.Move(word, (anchorRow, anchorCol - len(start) + 1), boardObj, across=across))
+            if across:
+                row, col = anchorRow, anchorCol - len(start) + 1
+            else:
+                row, col = anchorCol - len(start) + 1, anchorRow
+            possibleMoves.append(core.Move(word, (row, col), boardObj, across=across, score=None))
 
 
 def anchorCheck(anchorRow, anchorCol, rack):
@@ -191,7 +195,7 @@ def anchorCheck(anchorRow, anchorCol, rack):
     return goodAnchors
 
 
-def botPlayBoth(rack, boardObj, across=True):  # TODO: split this into more functions
+def moveOneWay(rack, boardObj, across):  # TODO: split this into more functions
     """ Plays the best move possible from a given rack
 
     :param rack: a string of the letters from the rack
@@ -236,9 +240,9 @@ def botPlayBoth(rack, boardObj, across=True):  # TODO: split this into more func
     return possibleMoves
 
 
-def botPlay(rack, boardObj):
-    acrossPlays = botPlayBoth(rack, boardObj, across=True)
+def allMoves(rack, boardObj):
+    acrossPlays = moveOneWay(rack, boardObj, True)
     flippedBoard = deepcopy(boardObj)
-    flippedBoard.squares = flippedBoard.squares.T
-    downPlays = botPlayBoth(rack, flippedBoard, across=False)
+    flippedBoard.squares = flippedBoard.squares.transpose()
+    downPlays = moveOneWay(rack, flippedBoard, False)
     return sorted(chain(acrossPlays, downPlays))
