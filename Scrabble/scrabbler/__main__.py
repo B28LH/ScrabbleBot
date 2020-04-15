@@ -1,3 +1,4 @@
+from scrabbler.major import core, data, algo, player
 from tests import test_all
 
 # TODO:
@@ -19,17 +20,18 @@ To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
 
-test_all.benchmark()
+# test_all.benchmark()
 # gb = data.gameBoard = core.Board()
 #
 # botLet = ''
 #
 # player.playMove(botLet, gb)
 #
-# gb = core.load("ThreeWords")
-#
-# player.playMove('testing', gb)
+gb = core.load("ThreeWords")
+
+player.playMove('testing', gb)
 
 # gb = data.gameBoard = core.load("ThreeWords")
 
-# Randomplays: tests.randomPlay()
+# Randomplays:
+# tests.randomPlay()
