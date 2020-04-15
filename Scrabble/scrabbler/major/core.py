@@ -178,7 +178,7 @@ class Move:
         if self.across:
             return f"→ {self.word} ({self.row},{self.col}) {self.score}p"
         else:
-            return f"↓ {self.word} ({self.col},{self.row}) {self.score}p"
+            return f"↓ {self.word} ({self.row},{self.col}) {self.score}p"
 
     def __lt__(self, other):
         return self.score < other.score

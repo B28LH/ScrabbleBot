@@ -17,6 +17,7 @@ def playMove(rack, boardObj, handicap=1):
     :param rack: the (usually 7 letter) iterable (string or list) of letters with which the bot plays
     :param boardObj: the board, a Board() object
     :param handicap: the percentile of the selected move from all move (1 is the best, 0.5 is half way etc.)
+        suggested handicap is 0.97
     :return a list of Move() objects in sorted order
     """
     theMoves = algo.allMoves(rack, boardObj)
@@ -48,9 +49,9 @@ def castMove(moveStr, boardObj=data.gameBoard):
 def analyseMove(theMoves):
     """ A wrapper for playMove that finds percentiles"""
     scores = np.array([x.score for x in theMoves])
-    for i in range(-5, 5):
-        i /= 2
-        print(i, scores.std() + i * scores.mean())
     for i in range(20):
-        i /= 20
+        i /= 5
+        print(i, scores.std() + i * scores.mean())
+    for i in range(90, 100):
+        i /= 100
         print(i, theMoves[int(len(theMoves) * i)].score)

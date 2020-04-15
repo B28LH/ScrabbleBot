@@ -2,13 +2,12 @@ from scrabbler.major import core, data, algo, player
 from tests import test_all
 
 # TODO:
-# Better user input
+# Move first
 # Validate / score user input
-# Custom difficulty
+# Check delete function
 # Blanks
 # Speed analysis
 # [''.join(s) for s in substrings('more')]
-# Add to gitHub
 
 
 """
@@ -20,16 +19,16 @@ To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
 
+gb = data.gameBoard = core.Board()
 # test_all.benchmark()
-# gb = data.gameBoard = core.Board()
 #
 # botLet = ''
 #
-# player.playMove(botLet, gb)
+# bests = player.playMove(botLet, gb, handicap=0.97)
 #
-gb = core.load("ThreeWords")
-
-player.playMove('testing', gb)
+# gb = core.load("ThreeWords")
+#
+# player.playMove('testing', gb)
 
 # gb = data.gameBoard = core.load("ThreeWords")
 

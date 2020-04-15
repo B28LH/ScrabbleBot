@@ -101,7 +101,7 @@ def crossChecks(boardObj):
     moveGrid, _ = betterMoveTiles(boardObj, across=False)
     for row in range(boardObj.size):
         for col in range(boardObj.size):
-            if moveGrid[row][col]:
+            if moveGrid[row][col] and moveGrid[row][col] != -1:  # Checking for start squares
                 works = set()
                 before, after = completeWord(boardObj, (row, col), across=False)
                 for char in data.loweralpha:
@@ -130,8 +130,6 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     :param boardObj: the Board() object
     :return: True if the word can be played, false if not
     """
-    if data.crossed is None:  # For when the function is called on its own
-        data.crossed = crossChecks(boardObj)
     if word not in data.wordset:  # This might not be needed
         return False
     elif anchorCol + len(word) - startLen >= boardObj.size:  # Check if the word will go over the board
@@ -201,7 +199,7 @@ def moveOneWay(rack, boardObj, across):  # TODO: split this into more functions
     :param rack: a string of the letters from the rack
     :param boardObj: a Board() object
     :param across: whether the bot is playing across moves
-    :return: TBD: MoveObj?
+    :return: an array of Move() objects
     """
     data.crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
