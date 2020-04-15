@@ -1,4 +1,5 @@
 from scrabbler.major import core, data, algo
+from copy import deepcopy
 import numpy as np
 
 
@@ -55,3 +56,12 @@ def analyseMove(theMoves):
     for i in range(90, 100):
         i /= 100
         print(i, theMoves[int(len(theMoves) * i)].score)
+
+
+def playBlank(tiles, boardObj=data.gameBoard):
+    realBests = []
+    for char in data.loweralpha:
+        print("Trying: ", char)
+        realBests.extend(algo.allMoves(tiles + char, deepcopy(boardObj)))
+    realBests.sort()
+    return realBests

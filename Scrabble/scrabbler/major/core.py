@@ -8,7 +8,7 @@ from scrabbler.major import data, algo
 
 
 class Board:
-    def __init__(self, design=data.official, title=None):
+    def __init__(self, design=data.design, title=None):
         r, c = design.shape
         self.design = design
         self.fullDesign = np.pad(design, ((0, r - 1), (0, c - 1)), 'reflect')

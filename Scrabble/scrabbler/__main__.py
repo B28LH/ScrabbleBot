@@ -2,10 +2,9 @@ from scrabbler.major import core, data, algo, player
 from tests import test_all
 
 # TODO:
-# Move first
 # Validate / score user input
 # Check delete function
-# Blanks
+# Blanks don't score points
 # Speed analysis
 # [''.join(s) for s in substrings('more')]
 
@@ -19,16 +18,23 @@ To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
 
-gb = data.gameBoard = core.Board()
+gb = data.gameBoard = core.Board(design=data.official)
 # test_all.benchmark()
-#
-# botLet = ''
-#
-# bests = player.playMove(botLet, gb, handicap=0.97)
+
 #
 # gb = core.load("ThreeWords")
 #
-# player.playMove('testing', gb)
+botLet = 'oRanGes'
+bests = player.playMove(botLet, gb)
+
+# # Blank Tiles
+# from copy import deepcopy
+# tiles = 'qycsne'
+# realBests = []
+# for char in data.loweralpha:
+#     print("Trying: ", char)
+#     realBests.extend(algo.allMoves(tiles+char, deepcopy(gb)))
+# realBests.sort()
 
 # gb = data.gameBoard = core.load("ThreeWords")
 

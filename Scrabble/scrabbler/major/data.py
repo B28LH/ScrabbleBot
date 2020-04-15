@@ -22,6 +22,9 @@ wTileValues = {"a": 1, "c": 4, "b": 4, "e": 1, "d": 2, "g": 3,
                "r": 1, "u": 2, "t": 1, "w": 4, "v": 5, "y": 3,
                "x": 8, "z": 10}
 
+for upperChar in string.ascii_uppercase:
+    wTileValues[upperChar] = sTileValues[upperChar] = 0
+
 bagamts = {"a": 9, "c": 2, "b": 2, "e": 12, "d": 4, "g": 3,
            "f": 2, "i": 9, "h": 2, "k": 1, "j": 1, "m": 2,
            "l": 4, "o": 8, "n": 6, "q": 1, "p": 2, "s": 4,

@@ -5,7 +5,7 @@ import sys
 
 WWF = False
 small = False
-title = 'Sparse'
+title = 'Test'
 
 
 if WWF:
@@ -23,8 +23,9 @@ else:
     data.startTile = True
     data.tileValues = data.sTileValues
     data.design = data.official
-    with open(data.path + 'alphabets/collinsdict.pkl', 'rb') as f:
-        data.meaningDict = pickle.load(f)
+
+with open(data.path + 'alphabets/collinsdict.pkl', 'rb') as f:
+    data.meaningDict = pickle.load(f)
 
 with open(data.path + f'./alphabets/{data.dictfile}_set.pkl', 'rb') as infile:
     data.wordset = pickle.load(infile)
