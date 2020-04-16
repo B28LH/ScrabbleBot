@@ -31,6 +31,17 @@ bagamts = {"a": 9, "c": 2, "b": 2, "e": 12, "d": 4, "g": 3,
            "r": 6, "u": 4, "t": 6, "w": 2, "v": 2, "y": 2,
            "x": 1, "z": 1}
 
+bag = []
+for key, value in bagamts.items():
+    bag.extend([key] * value)
+
+humanActions = {"[P]lay": "Play a move on the board, of the form 'a 3 2 word', where a is across, d is down",
+                "[C]heck": "Same as Play, without placing the word; returns the points of the move if valid",
+                "[D]ictionary": "Query if a word is in the dictionary",
+                "[S]huffle:": "Shuffles your rack and returns the scores",
+                "[H]elp": "Returns all possible action",
+                "[K]eep": "Saves the board",
+                "[Q]uit": "Exits"}
 
 # Boards
 
@@ -66,6 +77,7 @@ friendsBig = np.array([list(x) for x in friendsBigQuad])
 
 # Essential Globals
 
+design = official
 dictfile = None
 wordset = None
 meaningDict = None

@@ -8,10 +8,10 @@ from scrabbler.major import data, algo
 
 
 class Board:
-    def __init__(self, design=data.design, title=None):
-        r, c = design.shape
-        self.design = design
-        self.fullDesign = np.pad(design, ((0, r - 1), (0, c - 1)), 'reflect')
+    def __init__(self, title=None):
+        r, c = data.design.shape
+        self.design = data.design
+        self.fullDesign = np.pad(data.design, ((0, r - 1), (0, c - 1)), 'reflect')
         self.squares = self.fullDesign
         self.size = len(self.squares)
         self.title = title
@@ -39,7 +39,7 @@ class Board:
         return self.squares[index]
 
     def __delitem__(self, index):  # This resets the whole row to the design
-        self.squares[index] = self.fullDesign[index]
+        self[index] = self.fullDesign[index]
 
     @property
     def alpha(self):
@@ -81,8 +81,8 @@ class Board:
             print(self)
 
 
-def load(name, display=False):  # TODO: Fix loading to support objects?
-    # TODO: Rewrite load function
+def load(name, display=False):
+    # TODO: Rewrite load function (support objects?)
     """ Loads a board from file into a BoardObj
     Watch out for loading a deprecated Board object (or just an array)
 
@@ -138,7 +138,7 @@ def scorer(moveObj):
         if not moveObj.board.alpha[moveObj.fakeRow][moveObj.fakeCol + i]:
             playedTiles += 1
             before, after = algo.completeWord(moveObj.board, (moveObj.fakeRow, moveObj.fakeCol + i), across=False)
-            if not (before is '' and after is ''):
+            if not (before == '' and after == ''):
                 backing = [None] * (len(before) + len(after) + 1)
                 backing[len(before)] = moveObj.xray[i]
                 score += convert(''.join((before, char, after)), backing)

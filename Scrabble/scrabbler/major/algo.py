@@ -92,12 +92,12 @@ def crossChecks(boardObj):
     :param boardObj:
     :return: outArray, a (NON NUMPY) array:
         1) If the cell is occupied by a letter, is None
-        2) If the cell is not affected by any vertical collisions, is "CLEAR"
+        2) If the cell is not affected by any vertical collisions, is C (for clear)
         3) If the cell is affected by any vertical collisions, a set of valid tiles to place (CANNOT BE EMPTY)
-        4) If the cell is affected by vertical collisions and no tile can be place, is INVALID
+        4) If the cell is affected by vertical collisions and no tile can be place, is I
 
     """
-    outArray = [["CLEAR" for _ in range(boardObj.size)] for _ in range(boardObj.size)]
+    outArray = [["C" for _ in range(boardObj.size)] for _ in range(boardObj.size)]
     moveGrid, _ = betterMoveTiles(boardObj, across=False)
     for row in range(boardObj.size):
         for col in range(boardObj.size):
@@ -111,7 +111,7 @@ def crossChecks(boardObj):
                 if len(works) > 0:
                     outArray[row][col] = works
                 else:
-                    outArray[row][col] = "INVALID"
+                    outArray[row][col] = "I"
             elif boardObj.alpha[row, col]:
                 outArray[row][col] = None
     return outArray
@@ -146,10 +146,10 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
         if crossStatus is None:
             if boardObj.squares[myRow, myCol] != word[i]:
                 return False
-        elif crossStatus == "INVALID":
+        elif crossStatus == "I":
             return False
         else:
-            if crossStatus != "CLEAR" and word[i] not in crossStatus:
+            if crossStatus != "C" and word[i] not in crossStatus:
                 return False
             elif word[i] not in letters:
                 return False
@@ -164,12 +164,13 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
 def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, across=True):
     """ extraStart includes placed tiles to the right of the anchor, start does not"""
     endings = data.completor.keys(extraStart)
+    startLen = len(start)
     for word in endings:
-        if checkWordMatches(len(start), word, anchorRow, anchorCol, playableTiles, boardObj):
+        if checkWordMatches(startLen, word, anchorRow, anchorCol, playableTiles, boardObj):
             if across:
-                row, col = anchorRow, anchorCol - len(start) + 1
+                row, col = anchorRow, anchorCol - startLen + 1
             else:
-                row, col = anchorCol - len(start) + 1, anchorRow
+                row, col = anchorCol - startLen + 1, anchorRow
             possibleMoves.append(core.Move(word, (row, col), boardObj, across=across, score=None))
 
 
@@ -182,9 +183,9 @@ def anchorCheck(anchorRow, anchorCol, rack):
     :return: False, if no anchor can be played, or a set of possible plays
     """
     goodLetters = data.crossed[anchorRow][anchorCol]  # Checking the anchor square for down restrictions
-    if goodLetters is None or goodLetters is "INVALID":
+    if goodLetters is None or goodLetters == "I":
         return False  # The anchor cannot be played, so move to next anchor spot
-    elif goodLetters is "CLEAR":
+    elif goodLetters == "C":
         goodAnchors = set(rack)
     else:
         goodAnchors = set(rack) & set(goodLetters)  # Rack letters which can be played in the anchor
@@ -193,7 +194,7 @@ def anchorCheck(anchorRow, anchorCol, rack):
     return goodAnchors
 
 
-def moveOneWay(rack, boardObj, across):  # TODO: split this into more functions
+def moveOneWay(rack, boardObj, across):
     """ Plays the best move possible from a given rack
 
     :param rack: a string of the letters from the rack
@@ -221,7 +222,6 @@ def moveOneWay(rack, boardObj, across):  # TODO: split this into more functions
                 # This step could really blow up (around 2000 results), problematic IF COUNTER <1 ??
                 # The list thing also might blow up
                 tempLeftParts = chain.from_iterable([permutations(tilesLeft, i) for i in range(0, counter + 1)])
-                # TODO: Clean up leftParts
                 leftParts = [(part, ''.join((*part, anchorLetter, after))) for part in tempLeftParts]
                 for initial, extraStart in leftParts:
                     theseTilesLeft = list(tilesLeft)

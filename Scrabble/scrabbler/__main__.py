@@ -3,7 +3,7 @@ from tests import test_all
 
 # TODO:
 # Validate / score user input
-# Check delete function
+# Play virtually
 # Blanks don't score points
 # Speed analysis
 # [''.join(s) for s in substrings('more')]
@@ -17,15 +17,16 @@ TO EXECUTE THE MAIN FILE:
 To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
+# gb = data.gameBoard = core.Board()
+test_all.benchmark()
 
-gb = data.gameBoard = core.Board(design=data.official)
-# test_all.benchmark()
+# 10.126 seconds
 
 #
-# gb = core.load("ThreeWords")
+# gb = data.gameBoard = core.load("ThreeWords")
 #
-botLet = 'oRanGes'
-bests = player.playMove(botLet, gb)
+# botLet = 'oRanGes'
+# bests = player.playMove(botLet, gb)
 
 # # Blank Tiles
 # from copy import deepcopy
@@ -35,8 +36,6 @@ bests = player.playMove(botLet, gb)
 #     print("Trying: ", char)
 #     realBests.extend(algo.allMoves(tiles+char, deepcopy(gb)))
 # realBests.sort()
-
-# gb = data.gameBoard = core.load("ThreeWords")
 
 # Randomplays:
 # tests.randomPlay()

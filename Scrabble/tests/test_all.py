@@ -24,8 +24,8 @@ def my_letters():
 
 
 def test_crossCheck(my_board):
-    assert algo.crossChecks(my_board)[5][5] is "INVALID"
-    assert algo.crossChecks(my_board)[9][6] is "CLEAR"
+    assert algo.crossChecks(my_board)[5][5] is "I"
+    assert algo.crossChecks(my_board)[9][6] is "C"
     assert algo.crossChecks(my_board)[9][5] is None
     assert isinstance(algo.crossChecks(my_board)[11][5], type(set()))
 
@@ -42,11 +42,9 @@ def test_checkWordMatches(my_board):
     # left collision not registering properly: (lose as 'ose' w/o l)
 
 
-
 def test_scoring(my_board):
-    assert core.Move('otter', (12, 8), my_board, score=None).score == 12
-    assert core.Move('mem', (9, 9), my_board, score=None).score == 7
-    print(data.gameBoard)
+    assert core.Move('otter', (12, 8), my_board, True, score=None).score == 12
+    assert core.Move('mem', (9, 9), my_board, True, score=None).score == 7
 
 
 def test_allMoves(my_letters, my_board):
