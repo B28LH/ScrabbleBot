@@ -53,8 +53,8 @@ def betterMoveTiles(boardObj, across=True, both=False):
         border = leftRight
     else:
         border = upDown
-    surround = ndimage.generic_filter(boardObj.alpha, border, size=(3, 3), mode='constant')
-    output = (1 - boardObj.alpha) * surround
+    surround = ndimage.generic_filter(boardObj.cachedAlpha, border, size=(3, 3), mode='constant')
+    output = (1 - boardObj.cachedAlpha) * surround
     return output, np.transpose(output.nonzero())
 
 
@@ -69,7 +69,7 @@ def completeWord(boardObj, coord, across=True):
     posPart = ''
     while True:
         tile = posMove(row, col, across)
-        if tile and boardObj.alpha[tile]:
+        if tile and boardObj.cachedAlpha[tile]:
             posPart += boardObj.squares[tile]
             row, col = tile
         else:
@@ -78,7 +78,7 @@ def completeWord(boardObj, coord, across=True):
     negPart = ''
     while True:
         tile = negMove(row, col, boardObj.size, across)
-        if tile and boardObj.alpha[tile]:
+        if tile and boardObj.cachedAlpha[tile]:
             negPart += boardObj.squares[tile]
             row, col = tile
         else:
@@ -112,7 +112,7 @@ def crossChecks(boardObj):
                     outArray[row][col] = works
                 else:
                     outArray[row][col] = "I"
-            elif boardObj.alpha[row, col]:
+            elif boardObj.cachedAlpha[row, col]:
                 outArray[row][col] = None
     return outArray
 
@@ -130,33 +130,34 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     :param boardObj: the Board() object
     :return: True if the word can be played, false if not
     """
-    if word not in data.wordset:  # This might not be needed
+    wordLen = len(word)
+    if anchorCol + wordLen - startLen >= boardObj.size:  # Check if the word will go over the board
         return False
-    elif anchorCol + len(word) - startLen >= boardObj.size:  # Check if the word will go over the board
+    elif word not in data.wordset:  # This might not be needed
         return False
-    elif startLen == len(word):  # Letting two letter words be played
+    elif startLen == wordLen:  # Letting two letter words be played
         return True
     elif data.crossed is None:  # For when the function is called on its own
         data.crossed = crossChecks(boardObj)
     i = startLen
     letters = list(remainingTiles)
-    while i < len(word):  # Relative position to anchor
+    while i < wordLen:  # Relative position to anchor
         myRow, myCol = anchorRow, anchorCol + 1 - startLen + i  # Finding i's position on the board
         crossStatus = data.crossed[myRow][myCol]  # Crossed should be in data
-        if crossStatus is None:
-            if boardObj.squares[myRow, myCol] != word[i]:
+        if crossStatus:
+            if crossStatus == "I":
                 return False
-        elif crossStatus == "I":
-            return False
-        else:
-            if crossStatus != "C" and word[i] not in crossStatus:
+            elif crossStatus != "C" and word[i] not in crossStatus:
                 return False
             elif word[i] not in letters:
                 return False
             letters.remove(word[i])
+        else:
+            if boardObj.squares[myRow, myCol] != word[i]:
+                return False
         i += 1
-    rightTile = negMove(anchorRow, anchorCol - startLen + len(word), boardObj.size)
-    if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
+    rightTile = negMove(anchorRow, anchorCol - startLen + wordLen, boardObj.size)
+    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
         return False
     return True
 
@@ -239,6 +240,7 @@ def moveOneWay(rack, boardObj, across):
 
 
 def allMoves(rack, boardObj):
+    boardObj.cachedAlpha = boardObj.alpha
     acrossPlays = moveOneWay(rack, boardObj, True)
     flippedBoard = deepcopy(boardObj)
     flippedBoard.squares = flippedBoard.squares.transpose()
