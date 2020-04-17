@@ -65,36 +65,106 @@ def castMove(moveStr, boardObj=data.gameBoard):
     boardObj.layer(moveObj)
 
 
-def virtualGame(handicap=1):  # TODO: Human interaction
+def checkHumanWord(word, startRow, startCol, remainingTiles, boardObj):
+    """ When given a word, checks that the word can be played given the board and tiles
+
+    :param word: the word you are playing
+    :param startRow: the row of the leftmost tile
+    :param startCol: the column of the leftmost tile
+    :param remainingTiles: the tiles you can play with
+    :param boardObj: the Board() object
+    :return: True if the word can be played, false if not
+    """
+    boardObj.cachedAlpha = boardObj.alpha
+    data.crossed = algo.crossChecks(boardObj)
+    wordLen = len(word)
+    if startCol + wordLen >= boardObj.size:  # Check if the word will go over the board
+        return False
+    elif word not in data.wordset:  # This might not be needed
+        return False
+    leftTile = algo.posMove(startRow, startCol, across=True)
+    if leftTile is not None and boardObj.cachedAlpha[leftTile]:  # Checks if right is not clear.
+        return False
+    rightTile = algo.negMove(startRow, startCol + wordLen, boardObj.size)
+    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
+        return False
+    i = 0
+    letters = list(remainingTiles)
+    while i < wordLen:
+        crossStatus = data.crossed[startRow][startCol + i]  # Crossed should be in data
+        if crossStatus:
+            if crossStatus == "I":
+                return False
+            elif crossStatus != "C" and word[i] not in crossStatus:
+                return False
+            elif word[i] not in letters:
+                return False
+            letters.remove(word[i])
+        else:
+            if boardObj.squares[startRow, startCol + i] != word[i]:
+                return False
+        i += 1
+    return letters
+
+
+def printTiles(humanTiles):
+    print(f"Your rack: {''.join(humanTiles)}")
+    for char in humanTiles:
+        print(f"{char}: {data.sTileValues[char]}")
+
+
+def virtualGame(handicap=1):  # TODO: Keep track of scores
     """ WORK IN PROGRESS: Play a game against the machine without a real board"""
     gb = data.gameBoard = core.Board()
+    humanTiles = drawTiles(7)
+    humanScore = 0
+    botScore = 0
     while True:
-        humanTiles = drawTiles(7)
-        print(f"Your rack:")
-        for char in humanTiles:
-            print(f"{char}: {data.sTileValues[char]}")
+        humanTiles.extend(drawTiles(7 - len(humanTiles)))
+        printTiles(humanTiles)
         while True:
             response = input("Action? [Type H for help]: ")
             if response is not None:
                 args = response.split()
                 command = args[0][0].upper()
-                if command == 'P':
-                    pass
-                    break
-                    # TODO: make user evaluation
+                if command in ('P', 'C'):
+                    _, direction, row, col, word = args
+                    row, col = int(row), int(col)
+                    humanMove = core.Move(word, (row, col), gb, direction == 'a')
+                    if direction == 'd':
+                        flippedBoard = deepcopy(data.gameBoard)
+                        flippedBoard.squares = flippedBoard.squares.transpose()
+                        validity = checkHumanWord(word, col, row, humanTiles, flippedBoard)
+                    else:
+                        validity = checkHumanWord(word, row, col, humanTiles, data.gameBoard)
+                    if validity:
+                        print(str(humanMove))
+                        if command == 'P':
+                            data.gameBoard.layerMoveObj(humanMove)
+                            humanTiles = list(validity)
+                            humanScore += humanMove.score
+                            break
+                    else:
+                        print("Not a valid move")
                 elif command == 'D':
                     print(f"{args[1]}: {meaning(args[1])}")
                 elif command == 'S':
                     random.shuffle(humanTiles)
+                    printTiles(humanTiles)
                 elif command == 'H':
                     for key, value in data.humanActions.items():
                         print(key, value)
+                elif command == 'B':
+                    print(data.gameBoard)
                 elif command == 'K' and len(args) > 1:
-                    data.gameBoard.save(saveName=args[1], display=True)
+                    data.gameBoard.save(saveName=args[1])
                 elif command == 'Q':
                     quit()
-        botLetters = drawTiles(7)
-        playMove(botLetters, data.gameBoard, handicap=handicap)
+        botLetters = drawTiles(7)  # The bot shouldn't get 7 new tiles each round.
+        print(f"BotLetters: {''.join(botLetters)}")
+        answer = playMove(botLetters, data.gameBoard, handicap=handicap)[-1]
+        botScore += answer.score
+        print(f"BotScore: {botScore}, HumanScore: {humanScore}")
 
 # DEVELOPMENT:
 

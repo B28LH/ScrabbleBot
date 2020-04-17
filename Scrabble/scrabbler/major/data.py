@@ -41,6 +41,7 @@ humanActions = {"[P]lay": "Play a move on the board, of the form 'a 3 2 word', w
                 "[S]huffle:": "Shuffles your rack and returns the scores",
                 "[H]elp": "Returns all possible action",
                 "[K]eep": "Saves the board",
+                "[B]oard": "Displays the board",
                 "[Q]uit": "Exits"}
 
 # Boards

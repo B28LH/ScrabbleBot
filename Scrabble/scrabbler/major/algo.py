@@ -139,6 +139,9 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
         return True
     elif data.crossed is None:  # For when the function is called on its own
         data.crossed = crossChecks(boardObj)
+    rightTile = negMove(anchorRow, anchorCol - startLen + wordLen, boardObj.size)
+    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
+        return False
     i = startLen
     letters = list(remainingTiles)
     while i < wordLen:  # Relative position to anchor
@@ -156,9 +159,6 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
             if boardObj.squares[myRow, myCol] != word[i]:
                 return False
         i += 1
-    rightTile = negMove(anchorRow, anchorCol - startLen + wordLen, boardObj.size)
-    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
-        return False
     return True
 
 
@@ -203,6 +203,7 @@ def moveOneWay(rack, boardObj, across):
     :param across: whether the bot is playing across moves
     :return: an array of Move() objects
     """
+    boardObj.cachedAlpha = boardObj.alpha
     data.crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
     possibleMoves = []  # A list of Move() objects
@@ -240,7 +241,6 @@ def moveOneWay(rack, boardObj, across):
 
 
 def allMoves(rack, boardObj):
-    boardObj.cachedAlpha = boardObj.alpha
     acrossPlays = moveOneWay(rack, boardObj, True)
     flippedBoard = deepcopy(boardObj)
     flippedBoard.squares = flippedBoard.squares.transpose()

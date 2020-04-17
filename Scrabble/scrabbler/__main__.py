@@ -18,12 +18,12 @@ To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
 # gb = data.gameBoard = core.Board()
-test_all.benchmark()
+# test_all.benchmark()
 
 # 10.126 seconds
 
 #
-# gb = data.gameBoard = core.load("ThreeWords")
+gb = data.gameBoard = core.load("ThreeWords")
 #
 # botLet = 'oRanGes'
 # bests = player.playMove(botLet, gb)
