@@ -26,6 +26,36 @@ def negMove(row, col, size, across=True):  # Negative is down or right
     return False
 
 
+def posMoveGen(row, col, boardObj, stop=None, across=True):
+    if across:
+        while col > 0:
+            col -= 1
+            if boardObj.cachedAlpha[row, col] == stop:
+                break
+            yield row, col
+    else:
+        while row > 0:
+            row -= 1
+            if boardObj.cachedAlpha[row, col] == stop:
+                break
+            yield row, col
+
+
+def negMoveGen(row, col, boardObj, stop=None, across=True):  # Negative is down or right
+    if across:
+        while col < boardObj.size - 1:
+            col += 1
+            if boardObj.cachedAlpha[row, col] == stop:
+                break
+            yield row, col
+    else:
+        while row < boardObj.size - 1:
+            row += 1
+            if boardObj.cachedAlpha[row, col] == stop:
+                break
+            yield row, col
+
+
 def betterMoveTiles(boardObj, across=True, both=False):
     """ Finds the playable squares from a board
 
@@ -66,23 +96,10 @@ def completeWord(boardObj, coord, across=True):
     :return: before, after, both strings, representing the contiguous tiles above/left and down/right
     """
     row, col = coord
-    posPart = ''
-    while True:
-        tile = posMove(row, col, across)
-        if tile and boardObj.cachedAlpha[tile]:
-            posPart += boardObj.squares[tile]
-            row, col = tile
-        else:
-            break
-    row, col = coord
-    negPart = ''
-    while True:
-        tile = negMove(row, col, boardObj.size, across)
-        if tile and boardObj.cachedAlpha[tile]:
-            negPart += boardObj.squares[tile]
-            row, col = tile
-        else:
-            break
+    posGen = posMoveGen(row, col, boardObj, stop=0, across=across)
+    negGen = negMoveGen(row, col, boardObj, stop=0, across=across)
+    posPart = ''.join(boardObj.squares[tile] for tile in posGen)
+    negPart = ''.join(boardObj.squares[tile] for tile in negGen)
     return posPart[::-1], negPart
 
 

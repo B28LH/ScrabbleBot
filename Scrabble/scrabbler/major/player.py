@@ -73,7 +73,7 @@ def checkHumanWord(word, startRow, startCol, remainingTiles, boardObj):
     :param startCol: the column of the leftmost tile
     :param remainingTiles: the tiles you can play with
     :param boardObj: the Board() object
-    :return: True if the word can be played, false if not
+    :return: List of remaining tiles if the word can be played, False if not
     """
     boardObj.cachedAlpha = boardObj.alpha
     data.crossed = algo.crossChecks(boardObj)

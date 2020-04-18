@@ -99,6 +99,7 @@ def load(name, display=False):
     else:
         inData = LoadBoard.squares
     loader.squares = inData
+    loader.cachedAlpha = loader.alpha
     if display:
         print(f"\nGame '{name}' loaded \n\n{loader}")
     return loader

@@ -9,7 +9,7 @@ from scrabbler.oldCodes import scrabblerOLDWRAPPED
 
 def translatePlay(tiles, boardObj):
     result = sorted(scrabblerOLDWRAPPED.BestMove(tiles, boardObj.squares), key=lambda x: x[-1])
-    return [core.Move(x[2], x[1], boardObj, score=x[3]) for x in result if x[0] == 2]
+    return [core.Move(x[2], x[1], boardObj, x[0] == 'a', score=x[3]) for x in result]
 
 
 @pytest.fixture
@@ -24,8 +24,8 @@ def my_letters():
 
 
 def test_crossCheck(my_board):
-    assert algo.crossChecks(my_board)[5][5] is "I"
-    assert algo.crossChecks(my_board)[9][6] is "C"
+    assert algo.crossChecks(my_board)[5][5] == "I"
+    assert algo.crossChecks(my_board)[9][6] == "C"
     assert algo.crossChecks(my_board)[9][5] is None
     assert isinstance(algo.crossChecks(my_board)[11][5], type(set()))
 
@@ -52,8 +52,6 @@ def test_allMoves(my_letters, my_board):
     oldAnswer = translatePlay(my_letters, my_board)
     missedSolns = [x for x in oldAnswer if x not in newAnswer]
     newSolns = [x for x in newAnswer if x not in oldAnswer]
-    print('\n', my_board, my_letters)
-    print(f"missedSolns: {missedSolns}\n newSolns: {newSolns}")
     assert missedSolns == []
     assert newSolns == []
 
@@ -63,7 +61,9 @@ def benchmark():
     cProfile.runctx("algo.allMoves('asdflet', gb2)", globals(), locals(), sort=1)
 
 
-def randomPlay():
-    gb3 = data.gameBoard = core.Board()
+def randomPlay(boardObj=None):
+    if boardObj is None:
+        boardObj = data.gameBoard = core.Board()
     randomLet = ''.join(np.random.choice(np.array(data.loweralpha), size=7, replace=False))
-    player.playMove(randomLet, gb3)
+    player.playMove(randomLet, boardObj)
+    return boardObj
