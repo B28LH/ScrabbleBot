@@ -2,11 +2,9 @@ from scrabbler.major import core, data, algo, player
 from tests import test_all
 
 # TODO:
-# Validate / score user input
-# Play virtually
-# Blanks don't score points
-# Speed analysis
-# [''.join(s) for s in substrings('more')]
+#  Blanks don't score points
+#  Speed analysis
+#  [''.join(s) for s in substrings('more')]
 
 
 """

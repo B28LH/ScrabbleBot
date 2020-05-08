@@ -10,11 +10,11 @@ import pickle
 
 # TODO:
 # DONT DO DEFAULT VARIABLES
-# Implement meaning for every word played
+# Implement meaning for every word p layed
 # Recover changes from last time
 # Word exeption override
 
-path = '/Users/Ben/Documents/PythonScripts/Best Scripts/Scrabble/scrabbler/'
+path = '/Users/Ben/BLH Documents/Coding/PythonScripts/Best Scripts/Scrabble/scrabbler/'
 AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
 WWF = False  # Playing Words With Friends or traditional Scrabble
 Small = False  # Small or large board
@@ -95,7 +95,7 @@ width = len(b2[0])  # VERY important variable
 StartBoard = np.array([list(x) for x in b2])
 GameBoard = np.copy(StartBoard)
 
-with open(path + '/oldCodes/' + file, 'r') as file:
+with open(path + 'oldCodes/' + file, 'r') as file:
     words = file.read().split()
     words = set(words)
 
@@ -104,7 +104,7 @@ def isWord(word):
     return word in words
 
 
-with open(path + '/oldCodes/' + 'collinsdict.pkl', 'rb') as f:
+with open(path + 'oldCodes/' + 'collinsdict.pkl', 'rb') as f:
     collinsdict = pickle.load(f)
 
 

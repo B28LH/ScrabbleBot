@@ -113,7 +113,6 @@ def convert(word, behind):
     else:
         accept = ['!']
     for i, char in enumerate(word):
-        char = char.lower()  # TODO: Fix this bug
         if behind[i] == '*':
             output += 2 * data.tileValues[char]
         elif behind[i] == '^':

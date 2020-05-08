@@ -124,7 +124,7 @@ def virtualGame(handicap=1):  # TODO: Keep track of scores
         printTiles(humanTiles)
         while True:
             response = input("Action? [Type H for help]: ")
-            if response is not None:
+            try:
                 args = response.split()
                 command = args[0][0].upper()
                 if command in ('P', 'C'):
@@ -160,6 +160,8 @@ def virtualGame(handicap=1):  # TODO: Keep track of scores
                     data.gameBoard.save(saveName=args[1])
                 elif command == 'Q':
                     quit()
+            except:
+                pass
         botLetters = drawTiles(7)  # The bot shouldn't get 7 new tiles each round.
         print(f"BotLetters: {''.join(botLetters)}")
         answer = playMove(botLetters, data.gameBoard, handicap=handicap)[-1]
