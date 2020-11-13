@@ -21,13 +21,9 @@ def newBag():
 
 
 def drawTiles(numTiles):
-    rack = []
-    random.shuffle(data.bag)
-    i = 0
-    while len(data.bag) > 0 and i < numTiles:
-        rack.append(data.bag.pop())
-        i += 1
-    return rack
+    toDraw = min(numTiles, len(data.bag))  # if the bag is full
+    random.shuffle(data.bag)  # shuffle the bag
+    return [data.bag.pop() for _ in range(toDraw)]
 
 
 def playMove(rack, boardObj, handicap=1):
@@ -40,7 +36,6 @@ def playMove(rack, boardObj, handicap=1):
     :return a list of Move() objects in sorted order
     """
     theMoves = algo.allMoves(rack, boardObj)
-    print(boardObj)
     if len(theMoves) > 0:
         if handicap == 1:
             myMove = theMoves[-1]
@@ -116,6 +111,7 @@ def printTiles(humanTiles):
 def virtualGame(handicap=1):  # TODO: Keep track of scores
     """ WORK IN PROGRESS: Play a game against the machine without a real board"""
     gb = data.gameBoard = core.Board()
+    print(gb)
     humanTiles = drawTiles(7)
     humanScore = 0
     botScore = 0
@@ -159,7 +155,7 @@ def virtualGame(handicap=1):  # TODO: Keep track of scores
                 elif command == 'K' and len(args) > 1:
                     data.gameBoard.save(saveName=args[1])
                 elif command == 'Q':
-                    quit()
+                    return
             except:
                 pass
         botLetters = drawTiles(7)  # The bot shouldn't get 7 new tiles each round.

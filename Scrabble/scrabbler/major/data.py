@@ -87,7 +87,6 @@ completor = None
 allTileBonus = None
 startTile = None
 tileValues = None
-design = None
 
 gameBoard = None
 crossed = None

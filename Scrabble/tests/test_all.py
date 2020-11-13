@@ -57,6 +57,7 @@ def test_allMoves(my_letters, my_board):
 
 
 def benchmark():
+    # Better: %timeit algo.allMoves('asdflet', gb2)
     gb2 = data.gameBoard = core.load('Oscar2')
     cProfile.runctx("algo.allMoves('asdflet', gb2)", globals(), locals(), sort=1)
 
@@ -64,6 +65,8 @@ def benchmark():
 def randomPlay(boardObj=None):
     if boardObj is None:
         boardObj = data.gameBoard = core.Board()
-    randomLet = ''.join(np.random.choice(np.array(data.loweralpha), size=7, replace=False))
+    # randomLet = ''.join(np.random.choice(np.array(data.loweralpha), size=7, replace=False))
+    randomLet = player.drawTiles(7)
+    player.printTiles(randomLet)
     player.playMove(randomLet, boardObj)
     return boardObj

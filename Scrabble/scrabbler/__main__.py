@@ -1,5 +1,5 @@
 from scrabbler.major import core, data, algo, player
-from tests import test_all
+#from tests import test_all
 
 # TODO:
 #  Blanks don't score points
@@ -16,7 +16,8 @@ To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
 # gb = data.gameBoard = core.Board()
-test_all.benchmark()
+player.virtualGame()
+
 
 # 10.126 seconds
 
