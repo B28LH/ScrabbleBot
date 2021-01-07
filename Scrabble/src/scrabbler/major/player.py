@@ -1,4 +1,4 @@
-from scrabbler.major import core, data, algo
+from src.scrabbler.major import core, algo, data
 from copy import deepcopy
 import numpy as np
 import random
@@ -70,7 +70,7 @@ def checkHumanWord(word, startRow, startCol, remainingTiles, boardObj):
     :param boardObj: the Board() object
     :return: List of remaining tiles if the word can be played, False if not
     """
-    boardObj.cachedAlpha = boardObj.alpha
+    boardObj.alpha = boardObj.alpha
     data.crossed = algo.crossChecks(boardObj)
     wordLen = len(word)
     if startCol + wordLen >= boardObj.size:  # Check if the word will go over the board
@@ -78,10 +78,10 @@ def checkHumanWord(word, startRow, startCol, remainingTiles, boardObj):
     elif word not in data.wordset:  # This might not be needed
         return False
     leftTile = algo.posMove(startRow, startCol, across=True)
-    if leftTile is not None and boardObj.cachedAlpha[leftTile]:  # Checks if right is not clear.
+    if leftTile is not None and boardObj.alpha[leftTile]:  # Checks if right is not clear.
         return False
     rightTile = algo.negMove(startRow, startCol + wordLen, boardObj.size)
-    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
+    if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     i = 0
     letters = list(remainingTiles)

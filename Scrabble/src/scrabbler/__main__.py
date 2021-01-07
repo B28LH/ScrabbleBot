@@ -1,4 +1,5 @@
-from scrabbler.major import core, data, algo, player
+from src.scrabbler.major import core, algo, player, data
+
 #from tests import test_all
 
 # TODO:
@@ -15,9 +16,11 @@ TO EXECUTE THE MAIN FILE:
 To set up:
 Find the file data (scrabbler/major/data), change the path variable to where scrabbler file is
 """
-# gb = data.gameBoard = core.Board()
-player.virtualGame()
+gb = data.gameBoard = core.Board()
+# player.virtualGame()
 
+# gb = data.gameBoard = core.load("ThreeWords")
+# bests = player.playMove('banana', gb)
 
 # 10.126 seconds
 
@@ -37,5 +40,3 @@ player.virtualGame()
 #     realBests.extend(algo.allMoves(tiles+char, deepcopy(gb)))
 # realBests.sort()
 
-# Randomplays:
-# gb = test_all.randomPlay(gb)

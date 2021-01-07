@@ -1,7 +1,6 @@
-from scrabbler.major import core, data, algo, player
 import pickle
 import dawg
-import sys
+from src.scrabbler.major import data
 
 WWF = False
 small = False

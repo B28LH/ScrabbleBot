@@ -3,8 +3,8 @@ import cProfile
 import numpy as np
 import pytest
 
-from scrabbler.major import core, data, algo, player
-from scrabbler.oldCodes import scrabblerOLDWRAPPED
+from src.scrabbler.major import core, algo, player, data
+from src.scrabbler.oldCodes import scrabblerOLDWRAPPED
 
 
 def translatePlay(tiles, boardObj):
@@ -60,6 +60,11 @@ def benchmark():
     # Better: %timeit algo.allMoves('asdflet', gb2)
     gb2 = data.gameBoard = core.load('Oscar2')
     cProfile.runctx("algo.allMoves('asdflet', gb2)", globals(), locals(), sort=1)
+
+
+def blankBenchmark():
+    gb2 = data.gameBoard = core.load('Oscar2')
+    cProfile.runctx("algo.allMoves('asd&let', gb2)", globals(), locals(), sort=1)
 
 
 def randomPlay(boardObj=None):

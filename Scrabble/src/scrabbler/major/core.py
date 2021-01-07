@@ -3,8 +3,9 @@
 
 import pickle
 import numpy as np
+from functools import cached_property
 from copy import deepcopy
-from scrabbler.major import data, algo
+from src.scrabbler.major import algo, data
 
 
 class Board:
@@ -15,7 +16,6 @@ class Board:
         self.squares = self.fullDesign
         self.size = len(self.squares)
         self.title = title
-        self.cachedAlpha = self.alpha
 
     def __str__(self):
         indices = list(map(str, range(self.size)))
@@ -34,12 +34,10 @@ class Board:
         return str(self)
 
     def __getitem__(self, index):
-        self.cachedAlpha = self.alpha
         return self.squares[index]
 
     def __delitem__(self, index):  # This resets the whole row to the design
         self[index] = self.fullDesign[index]
-        self.cachedAlpha = self.alpha
 
     @property
     def alpha(self):
@@ -66,7 +64,6 @@ class Board:
             self.squares[row:row + wordLen, col] = list(word)
         if display:
             print(self)
-        self.cachedAlpha = self.alpha
 
     def layerMoveObj(self, moveObj, display=True):
         self.realLayer(moveObj.coords, moveObj.word, across=moveObj.across, display=display)
@@ -99,7 +96,6 @@ def load(name, display=False):
     else:
         inData = LoadBoard.squares
     loader.squares = inData
-    loader.cachedAlpha = loader.alpha
     if display:
         print(f"\nGame '{name}' loaded \n\n{loader}")
     return loader
@@ -136,7 +132,7 @@ def scorer(moveObj):
     playedTiles = 0
     initialBacking = np.array(moveObj.xray)
     for i, char in enumerate(moveObj.word):
-        if not moveObj.board.cachedAlpha[moveObj.fakeRow][moveObj.fakeCol + i]:
+        if not moveObj.board.alpha[moveObj.fakeRow][moveObj.fakeCol + i]:
             playedTiles += 1
             before, after = algo.completeWord(moveObj.board, (moveObj.fakeRow, moveObj.fakeCol + i), across=False)
             if not (before == '' and after == ''):

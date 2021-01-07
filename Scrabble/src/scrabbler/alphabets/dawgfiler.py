@@ -1,6 +1,6 @@
 import dawg
 import pickle
-from scrabbler.major import data
+import data
 
 
 # ONLY CARE ABOUT COMPLETOR DAWGS

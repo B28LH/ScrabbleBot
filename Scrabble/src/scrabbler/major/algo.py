@@ -3,7 +3,7 @@
 
 import numpy as np
 from itertools import permutations, chain
-from scrabbler.major import data, core
+from src.scrabbler.major import core, data
 from copy import deepcopy
 from scipy import ndimage
 
@@ -30,13 +30,13 @@ def posMoveGen(row, col, boardObj, stop=None, across=True):
     if across:
         while col > 0:
             col -= 1
-            if boardObj.cachedAlpha[row, col] == stop:
+            if boardObj.alpha[row, col] == stop:
                 break
             yield row, col
     else:
         while row > 0:
             row -= 1
-            if boardObj.cachedAlpha[row, col] == stop:
+            if boardObj.alpha[row, col] == stop:
                 break
             yield row, col
 
@@ -45,13 +45,13 @@ def negMoveGen(row, col, boardObj, stop=None, across=True):  # Negative is down 
     if across:
         while col < boardObj.size - 1:
             col += 1
-            if boardObj.cachedAlpha[row, col] == stop:
+            if boardObj.alpha[row, col] == stop:
                 break
             yield row, col
     else:
         while row < boardObj.size - 1:
             row += 1
-            if boardObj.cachedAlpha[row, col] == stop:
+            if boardObj.alpha[row, col] == stop:
                 break
             yield row, col
 
@@ -83,8 +83,8 @@ def betterMoveTiles(boardObj, across=True, both=False):
         border = leftRight
     else:
         border = upDown
-    surround = ndimage.generic_filter(boardObj.cachedAlpha, border, size=(3, 3), mode='constant')
-    output = (1 - boardObj.cachedAlpha) * surround
+    surround = ndimage.generic_filter(boardObj.alpha, border, size=(3, 3), mode='constant')
+    output = (1 - boardObj.alpha) * surround
     return output, np.transpose(output.nonzero())
 
 
@@ -129,7 +129,7 @@ def crossChecks(boardObj):
                     outArray[row][col] = works
                 else:
                     outArray[row][col] = "I"
-            elif boardObj.cachedAlpha[row, col]:
+            elif boardObj.alpha[row, col]:
                 outArray[row][col] = None
     return outArray
 
@@ -157,7 +157,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     elif data.crossed is None:  # For when the function is called on its own
         data.crossed = crossChecks(boardObj)
     rightTile = negMove(anchorRow, anchorCol - startLen + wordLen, boardObj.size)
-    if rightTile is not None and boardObj.cachedAlpha[rightTile]:  # Checks if right is not clear.
+    if rightTile is not None and boardObj.alpha[rightTile]:  # Checks if right is not clear.
         return False
     i = startLen
     letters = list(remainingTiles)
@@ -179,7 +179,7 @@ def checkWordMatches(startLen, word, anchorRow, anchorCol, remainingTiles, board
     return True
 
 
-def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, across=True):
+def wrapCheckWord(start, extraStart, anchorRow, anchorCol, playableTiles, possibleMoves, boardObj, across):
     """ extraStart includes placed tiles to the right of the anchor, start does not"""
     endings = data.completor.keys(extraStart)
     startLen = len(start)
@@ -220,7 +220,6 @@ def moveOneWay(rack, boardObj, across):
     :param across: whether the bot is playing across moves
     :return: an array of Move() objects
     """
-    boardObj.cachedAlpha = boardObj.alpha
     data.crossed = crossChecks(boardObj)
     anchorGrid, anchorList = betterMoveTiles(boardObj, both=True)  # TODO: IMPROVEMENT: just one betterMoveTiles.
     possibleMoves = []  # A list of Move() objects
@@ -248,12 +247,12 @@ def moveOneWay(rack, boardObj, across):
                         theseTilesLeft.remove(char)
                     start = ''.join((*initial, anchorLetter))
                     wrapCheckWord(start, extraStart, anchorRow, anchorCol,
-                                  theseTilesLeft, possibleMoves, boardObj, across=across)
+                                  theseTilesLeft, possibleMoves, boardObj, across)
             else:
                 start = ''.join((before, anchorLetter))
                 extraStart = ''.join((before, anchorLetter, after))
                 wrapCheckWord(start, extraStart, anchorRow, anchorCol,
-                              tilesLeft, possibleMoves, boardObj, across=across)
+                              tilesLeft, possibleMoves, boardObj, across)
     return possibleMoves
 
 

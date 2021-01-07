@@ -18,13 +18,14 @@ setup(
     version="0.1.0",
     url="https://github.com/B28LH/Scrabble",
     license='MIT',
-
+    extras_require=dict(tests=['pytest']),
     author="Ben Lloyd-Hurwitz",
 
     description="A scrabble playing bot",
     long_description=read("README.rst"),
 
-    packages=find_packages(exclude=('tests',)),
+    packages=find_packages(where='src'),
+    package_dir={"": "src"},
 
     install_requires=['numpy'],
 

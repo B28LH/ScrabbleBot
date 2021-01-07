@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -25,17 +28,107 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ee19483c-c3b3-471c-aa78-0cc6d6255266" name="Default Changelist" comment="failed cached alpha">
+    <list default="true" id="ee19483c-c3b3-471c-aa78-0cc6d6255266" name="Default Changelist" comment="Style changes">
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/major/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Bot2FirstGame.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Bot2vsLiam1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Bot2vsMum.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/CompvsMum.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/CompvsNan.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/DanMehBot.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/DanMehBot2.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Game1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/LukevsSoph.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Oscar1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Oscar2.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/OscarvsAunt.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/PopandNanvsComp.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/SophvsLukevsBen1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Sparse.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Test1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Test2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Test2.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Test3.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/ThreeWords.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/Virtual1.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/test4.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/scrabbler/scrabbleGames/trial.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/tests/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrabbler/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrabbler/__main__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrabbler/major/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrabbler/major/data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scrabbler/major/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/scrabbler/major/player.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_all.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Bot2FirstGame.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Bot2vsLiam1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Bot2vsMum.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/CompvsMum.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/CompvsNan.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/DanMehBot.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/DanMehBot2.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Game1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/LukevsSoph.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Oscar1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Oscar2.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/OscarvsAunt.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/PopandNanvsComp.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/SophvsLukevsBen1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Sparse.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Test1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Test2.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Test2.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Test3.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Test4.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/ThreeWords.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/Virtual1.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/ScrabbleGames/trial.pkl" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/__main__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/__main__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/README.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/collins.dawg" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/collins.dawg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/collins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/collins.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/collins_set.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/collins_set.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/collinsdict.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/collinsdict.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/collinsdict.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/collinsdict.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/dawgfiler.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/dawgfiler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/dawgtrial.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/dawgtrial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/timingtests.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/timingtests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/wwf.dawg" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/wwf.dawg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/wwf.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/wwf.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/alphabets/wwf_set.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/wwf_set.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/major/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/major/algo.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/major/algo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/major/core.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/major/core.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/major/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/major/data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/major/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/major/player.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/PickletoJSON.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/PickletoJSON.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/alphabets/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/collins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/collins.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/collinsdict.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/collinsdict.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/collinsdict.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/collinsdict.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scra.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scra.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble2.1.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble2.1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble2.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble3.1nx.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble3.1nx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble3.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble3nx.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble3nx.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble4.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble4.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabble5.0.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabble5.0.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabbleOLDMASTER.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabbleOLDMASTER.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/scrabblerOLDWRAPPED.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/scrabblerOLDWRAPPED.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/words.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/words.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scrabbler/oldCodes/wwf.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrabbler/oldCodes/wwf.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_all.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/tests/test_all.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -60,46 +153,27 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="pyconsole" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myUseExistingConsole" value="true" />
   </component>
-  <component name="RunManager" selected="Python.player">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.test_all">
     <configuration name="__main__" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Scrabble" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrabbler" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/scrabbler" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrabbler/__main__.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="algo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Scrabble" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrabbler/major" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrabbler/major/algo.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/scrabbler/__main__.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -112,36 +186,12 @@
       <module name="Scrabble" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scrabbler/major" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/scrabbler/major" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scrabbler/major/player.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="scratch_20" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Scrabble" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$APPLICATION_CONFIG_DIR$/scratches" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$APPLICATION_CONFIG_DIR$/scratches/scratch_20.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/scrabbler/major/player.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -154,15 +204,12 @@
       <module name="Scrabble" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_all.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/tests/test_all.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -171,13 +218,69 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest for src.tests.test_all.test_checkWordMatches" type="tests" factoryName="py.test" nameIsGenerated="true">
+      <module name="Scrabble" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;src.tests.test_all.test_checkWordMatches&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_all.test_allMoves" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="Scrabble" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_all.test_allMoves&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_all.test_checkWordMatches" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="Scrabble" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_all.test_checkWordMatches&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.player" />
+      <item itemvalue="Python.test_all" />
+      <item itemvalue="Python tests.pytest for src.tests.test_all.test_checkWordMatches" />
+      <item itemvalue="Python tests.pytest for test_all.test_allMoves" />
+      <item itemvalue="Python tests.pytest for test_all.test_checkWordMatches" />
+      <item itemvalue="Python.__main__" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.player" />
+        <item itemvalue="Python.test_all" />
         <item itemvalue="Python.player" />
         <item itemvalue="Python.__main__" />
-        <item itemvalue="Python.player" />
-        <item itemvalue="Python.test_all" />
+        <item itemvalue="Python.__main__" />
+        <item itemvalue="Python.__main__" />
       </list>
     </recent_temporary>
   </component>
@@ -193,6 +296,14 @@
       <option name="presentableId" value="Default" />
       <updated>1587290890928</updated>
     </task>
+    <task id="LOCAL-00001" summary="Style changes">
+      <created>1605308558464</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1605308558464</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -219,23 +330,8 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="323" y="109" key="RollbackChangesDialog" timestamp="1605308218561">
-      <screen x="0" y="0" width="1280" height="800" />
-    </state>
-    <state x="323" y="109" key="RollbackChangesDialog/0.0.1280.800@0.0.1280.800" timestamp="1605308218561" />
-    <state x="141" y="16" key="SettingsEditor" timestamp="1605306966987">
-      <screen x="0" y="0" width="1280" height="800" />
-    </state>
-    <state x="141" y="16" key="SettingsEditor/0.0.1280.800@0.0.1280.800" timestamp="1605306966987" />
-    <state x="141" y="39" key="SettingsEditor/0.23.1280.777@0.23.1280.777" timestamp="1605252383590" />
-    <state width="500" height="445" key="SwitcherDM" timestamp="1605306000948">
-      <screen x="0" y="0" width="1280" height="800" />
-    </state>
-    <state width="500" height="445" key="SwitcherDM/0.0.1280.800@0.0.1280.800" timestamp="1605306000948" />
-    <state x="100" y="100" width="1080" height="600" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1605232899726">
-      <screen x="0" y="23" width="1280" height="777" />
-    </state>
-    <state x="100" y="100" width="1080" height="600" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1280.777@0.23.1280.777" timestamp="1605232899726" />
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Style changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Style changes" />
   </component>
 </project>

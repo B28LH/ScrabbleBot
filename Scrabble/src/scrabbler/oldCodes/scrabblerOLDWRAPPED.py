@@ -14,7 +14,7 @@ import pickle
 # Recover changes from last time
 # Word exeption override
 
-path = '/Users/Ben/BLH Documents/Coding/PythonScripts/Best Scripts/Scrabble/scrabbler/'
+path = '/Users/Ben/BLH Documents/Coding/PythonScripts/Best Scripts/Scrabble/src/scrabbler/'
 AddOn = [(1, 0), (0, 1), (-1, 0), (0, -1)]  # For surrounding tiles
 WWF = False  # Playing Words With Friends or traditional Scrabble
 Small = False  # Small or large board
