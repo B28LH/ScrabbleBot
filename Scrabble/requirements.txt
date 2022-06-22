@@ -3,7 +3,7 @@ DAWG==0.8.0
 GADDAG==0.4
 importlib-metadata==1.6.0
 more-itertools==8.2.0
-numpy==1.18.2
+numpy==1.22.0
 packaging==20.3
 pluggy==0.13.1
 py==1.8.1
